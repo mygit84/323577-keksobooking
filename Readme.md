@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Наталья Осокина](https://up.htmlacademy.ru/javascript/16/user/323577).
-* Наставник: `Неизвестно`.
+* Наставник: [Анастасия Ничипорчук](https://htmlacademy.ru/profile/id612797).
 
 ---
 
