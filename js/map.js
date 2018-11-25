@@ -160,7 +160,7 @@ var drawElementFeatures = function () {
   similarMapCard.appendChild(renderElementFeatures());
   return drawElementFeatures;
 }
-debbuger;
+
 //функция создания карточки на карте
 var getMapCard = function (ads) {
   var cardElement = similarMapCard.cloneNode(true);
