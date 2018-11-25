@@ -62,16 +62,6 @@ var getRandomArr = function (arr) {
   return arr;
 };
 
-//функция генерации номера фотографии
-var getPhotoNumbers = function () {
-  var photoNumbers = [];
-
-  for (var i = 0; i < OBJECT_NUMBER; i++) {
-    photoNumbers.push(i + 1);
-  }
-  return photoNumbers;
-};
-
 //функция создания одного объекта ad
 var getObjectAd = function (index) {
   var ad = {
@@ -134,9 +124,11 @@ var renderMapPins = function () {
   return pinsFragment;
 };
 
+var pinsFragment = renderMapPins();
+
 //функция отрисовки меток
 var drawMapPins = function () {
-  containerPin.appendChild(renderMapPins());
+  containerPin.appendChild(pinsFragment);
   return drawMapPins;
 };
 
@@ -172,11 +164,12 @@ var drawElementFeatures = function () {
 }
 
 //функция создания карточки на карте
-var getMapCard = function (ad) {
+var getMapCard = function () {
+  var ad = getObjectAd(index);
   var cardElement = similarMapCard.cloneNode(true);
   var mapCardType = similarMapCard.querySelector('.popup__type');
 
-  similarMapCard.querySelector('.popup__title').textContent = ad.offer.title;
+  similarMapCard.querySelector('.popup__title').textContent = ad.offer.title[index];
   similarMapCard.querySelector('.popup__text--address').textContent = ad.offer.address;
   similarMapCard.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
   switch (ad.offer.type) {
@@ -211,14 +204,13 @@ var getMapCard = function (ad) {
 
 //функция отрисовки карточки
 var renderMapCard = function () {
-  var newCardElement = getMapCard();
 
-  for (var i = 0; i < renderMapPins().length; i++) {
-    showMap.insertBefore(newCardElement[i], mapFiltersContainer);
+  for (var i = 0; i < pinsFragment.length; i++) {
+    var newCardElement = showMap.insertBefore(getMapCard(i), mapFiltersContainer);
   }
-  return newCardElement[0];
+  return newCardElement;
 };
 
 drawMapPins();
-renderMapCard();
+renderMapCard(0);
 showMap.classList.remove('map--faded');
