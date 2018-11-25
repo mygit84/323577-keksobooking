@@ -36,6 +36,7 @@ var showMap = document.querySelector('.map');
 var containerPin = showMap.querySelector('.map__pins');
 var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
 var similarMapCard = document.querySelector('#card').content.querySelector('.map__card');
+var mapFiltersContainer = showMap.querySelector('.map__filters-container');
 
 //функция генерации числа из интервала чисел
 var getIntervalNum = function (min, max) {
@@ -111,9 +112,8 @@ var getObjectsAds = function () {
 };
 
 //функция создания метки на карте
-var getMapPin = function () {
+var getMapPin = function (ad) {
   var pinElement = similarMapPin.cloneNode(true);
-  var ad = getObjectAd();
 
   pinElement.style.left = ad.coordinate.coordinateX - PIN_WIDTH / 2 + 'px';
   pinElement.style.top = ad.coordinate.coordinateY - PIN_HEIGHT + 'px';
@@ -132,7 +132,6 @@ var renderMapPins = function () {
     pinsFragment.appendChild(getMapPin(ads[i]));
   }
   return pinsFragment;
-  console.log(pinsFragment);
 };
 
 //функция отрисовки меток
@@ -141,10 +140,40 @@ var drawMapPins = function () {
   return drawMapPins;
 };
 
+//функция создания элемента удобств
+var getElementFeature = function (index) {
+  var newElementFeature = document.createElement('li');
+  newElementFeature.classList.add('popup__feature');
+  newElementFeature.classList.add('popup__feature--' + ad.offer.feature[index]);
+
+  return newElementFeature;
+}
+
+//функция создания списка удобств
+var renderElementFeatures = function (ad) {
+
+  if (ad.offer.feature.length > 0) {
+    similarMapCard.querySelector('.popup__features').innerHTML = '';
+    var featuresFragment = document.createDocumentFragment();
+
+    for (var i = 0; i < ad.offer.feature.length; i++) {
+      featuresFragment.appendChild(getElementFeatures(i));
+    }
+  } else {
+    similarMapCard.querySelector('.popup__features').remove();
+  }
+  return featuresFragment;
+};
+
+//функция отрисовки списка удобств
+var drawElementFeatures = function () {
+  similarMapCard.appendChild(renderElementFeatures());
+  return drawElementFeatures;
+}
+
 //функция создания карточки на карте
-var getMapCard = function () {
-  var cardElement = similarMapCard.cloneNode(tru);
-  var ad = getObjectAd();
+var getMapCard = function (ad) {
+  var cardElement = similarMapCard.cloneNode(true);
   var mapCardType = similarMapCard.querySelector('.popup__type');
 
   similarMapCard.querySelector('.popup__title').textContent = ad.offer.title;
@@ -172,9 +201,24 @@ var getMapCard = function () {
   + ad.offer.guests + 'гостей';
   similarMapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin
   + ', выезд до ' + ad.offer.checkout;
-  similarMapCard.querySelector('.popup__features');
-}
+  similarMapCard.querySelector('.popup__features').textContent = drawElementFeatures();
+  similarMapCard.querySelector('.popup__description').textContent = ad.offer.description;
+  similarMapCard.querySelector('.popup__photos').textContent = ad.offer.photos;
+  similarMapCard.querySelector('.popup__avatar').src = ad.author.avatar;
 
+  return cardElement;
+};
+
+//функция отрисовки карточки
+var renderMapCard = function () {
+  var newCardElement = getMapCard();
+
+  for (var i = 0; i < renderMapPins().length; i++) {
+    showMap.insertBefore(newCardElement[i], mapFiltersContainer);
+  }
+  return newCardElement[0];
+};
 
 drawMapPins();
+renderMapCard();
 showMap.classList.remove('map--faded');
