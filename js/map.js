@@ -9,6 +9,8 @@ var MIN_GUESTS = 1;
 var MAX_GUESTS = 10;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var PHOTO_WIDTH = 45;
+var PHOTO_HEIGHT = 40;
 var MIN_COORDINATE_X = 0;
 var MAX_COORDINATE_X = 1200;
 var MIN_COORDINATE_Y = 130;
@@ -79,7 +81,7 @@ var getRandomArr = function (arr) {
 var getNewArrayFeatures = function (arr) {
 
   var randomFeatures = getRandomArr(arr);
-  var randomNum = getIntervalNum(1, arr.length);
+  var randomNum = getIntervalNum(1, arr.length + 1);
 
   return randomFeatures.slice(0, randomNum);
 };
@@ -166,19 +168,25 @@ var drawMapPins = function () {
   containerPin.appendChild(renderMapPins());
 };
 
+// Функция создания i-го элемента списка удобств
+var getElementFeature = function (newFeature, index) {
+  var newElementFeature = document.createElement('li');
+  newElementFeature.classList.add('popup__feature');
+  newElementFeature.classList.add('popup__feature--' + newFeature.offer.features[index]);
+
+  return newElementFeature;
+};
+
 // Функция создания фрагмента DOM-элементов <li> списка удобств, созданный на основе длинны
 // массива i-ых элементов значения features из ключа-объекта offer объекта ad
 // Входной параметр: newFeature (какой-то гипотетический объект хранящий ключ: значение offer: feature)
 // Выходной параметр: featuresFragment (фрагмент DOM-элементов <li>)
-var getElementFeatures = function (newFeatures) {
+var renderElementFeatures = function (newFeatures) {
   cardElement.querySelector('.popup__features').innerHTML = '';
   var featuresFragment = document.createDocumentFragment();
 
   for (var i = 0; i < newFeatures.offer.features.length; i++) {
-    var newElementFeature = document.createElement('li');
-    newElementFeature.classList.add('popup__feature');
-    newElementFeature.classList.add('popup__feature--' + newFeatures.offer.features[i]);
-    featuresFragment.appendChild(newElementFeature);
+    featuresFragment.appendChild(getElementFeature(newFeatures, i));
   }
   return featuresFragment;
 };
@@ -188,25 +196,30 @@ var getElementFeatures = function (newFeatures) {
 // Входной параметр: newFeature (какой-то гипотетический объект хранящий ключ: значение offer: feature)
 // Выходной параметр: нет
 var drawElementFeatures = function (ad) {
-  cardElement.querySelector('.popup__features').appendChild(getElementFeatures(ad));
+  cardElement.querySelector('.popup__features').appendChild(renderElementFeatures(ad));
+};
+
+// Функция создания i-го элемента списка фотографии
+var getCardPhoto = function (newPhoto, index) {
+  var newElementPhoto = document.createElement('img');
+  newElementPhoto.src = newPhoto.offer.photos[index];
+  newElementPhoto.classList.add('popup__photo');
+  newElementPhoto.width = PHOTO_WIDTH;
+  newElementPhoto.height = PHOTO_HEIGHT;
+  newElementPhoto.alt = 'Фотография жилья';
+  return newElementPhoto;
 };
 
 // Функция создания фрагмента DOM-элементов <img>, созданный на основе длинны
 // массива i-ых элементов значения photos из ключа-объекта offer объекта ad
 // Входной параметр: newPhotos (какой-то гипотетический объект хранящий ключ: значение offer: photos)
 // Выходные параметр: photosFragment (фрагмент DOM-элементов <img>)
-var getCardPhotos = function (newPhotos) {
+var renderCardPhotos = function (newPhotos) {
   cardElement.querySelector('.popup__photos').innerHTML = '';
   var photosFragment = document.createDocumentFragment();
 
   for (var i = 0; i < newPhotos.offer.photos.length; i++) {
-    var newElementPhoto = document.createElement('img');
-    newElementPhoto.src = newPhotos.offer.photos[i];
-    newElementPhoto.classList.add('popup__photo');
-    newElementPhoto.width = 45;
-    newElementPhoto.height = 40;
-    newElementPhoto.alt = 'Фотография жилья';
-    photosFragment.appendChild(newElementPhoto);
+    photosFragment.appendChild(getCardPhoto(newPhotos, i));
   }
   return photosFragment;
 };
@@ -215,19 +228,14 @@ var getCardPhotos = function (newPhotos) {
 // из ключа-объекта offer объекта ad в родительском DOM-элементе .popup__photos
 // Выходные параметр: нет
 var drawCardPhotos = function (ad) {
-  cardElement.querySelector('.popup__photos').appendChild(getCardPhotos(ad));
+  cardElement.querySelector('.popup__photos').appendChild(renderCardPhotos(ad));
 };
 
-// Функция создания DOM-элемента <article>, заполненного на основе данных из объекта ad
-// Входной параметр: ad (объект, ассоциативный массив хранящий ключ:значение)
-// Выходной параметр: cardElement (DOM-элемент, заполненный на основе данных из объекта ad)
-var getMapCard = function (ad) {
+// Функция переименования типа жилья
+var getCardType = function (cardType) {
   var mapCardType = cardElement.querySelector('.popup__type');
 
-  cardElement.querySelector('.popup__title').textContent = ad.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-  switch (ad.offer.type) {
+  switch (cardType.offer.type) {
     case 'flat': {
       mapCardType.textContent = 'Квартира';
       break;
@@ -245,6 +253,16 @@ var getMapCard = function (ad) {
       break;
     }
   }
+};
+
+// Функция создания DOM-элемента <article>, заполненного на основе данных из объекта ad
+// Входной параметр: ad (объект, ассоциативный массив хранящий ключ:значение)
+// Выходной параметр: cardElement (DOM-элемент, заполненный на основе данных из объекта ad)
+var getMapCard = function (ad) {
+  getCardType(ad);
+  cardElement.querySelector('.popup__title').textContent = ad.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
   cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для '
   + ad.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin
@@ -258,5 +276,6 @@ var getMapCard = function (ad) {
 };
 
 drawMapPins();
+getRandomArr(ads);
 showMap.insertBefore(getMapCard(ads[0]), mapFiltersContainer);
 showMap.classList.remove('map--faded');
