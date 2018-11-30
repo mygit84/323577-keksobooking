@@ -318,16 +318,19 @@ var lockPage = function () {
 };
 
 lockPage();
-
-var onMapPinClick = function () {
+var onPinClick = function (elem, index) {
+  elem.addEventListener('click', function () {
+    showMap.insertBefore(getMapCard(ads[index]), mapFiltersContainer);
+  });
+}
+var onMapPinsClick = function () {
   var mapPins = containerPin.querySelectorAll('button:not(.map__pin--main)');
 
   for (var i = 0; i < mapPins.length; i++) {
+
     var mapPin = containerPin.querySelector('.map__pin');
     mapPin = mapPins[i];
-    mapPin.addEventListener('click', function () {
-      showMap.insertBefore(getMapCard(ads[0]), mapFiltersContainer);
-    });
+    onPinClick(mapPin, i);
   }
 };
 
@@ -338,5 +341,5 @@ mapPinMain.addEventListener('click', function () {
   unlockForm();
   getCoordinateActive();
   drawMapPins();
-  onMapPinClick();
+  onMapPinsClick();
 });
