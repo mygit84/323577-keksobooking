@@ -322,7 +322,8 @@ var onPinClick = function (elem, index) {
   elem.addEventListener('click', function () {
     showMap.insertBefore(getMapCard(ads[index]), mapFiltersContainer);
   });
-}
+};
+
 var onMapPinsClick = function () {
   var mapPins = containerPin.querySelectorAll('button:not(.map__pin--main)');
 
