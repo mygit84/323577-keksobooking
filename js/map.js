@@ -256,6 +256,8 @@ var getMapCard = function (ad) {
   cardElement.querySelector('.popup__photos').src = drawCardPhotos(ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
+  document.addEventListener('keydown', onEscKeyPress);
+
   return cardElement;
 };
 
@@ -297,14 +299,14 @@ var unlockForm = function () {
 
 // Функция получения координат метки на неактивной странице
 var getCoordinateInactive = function () {
-  var xCoordinate = x - MAIN_PIN_WIDTH / 2;
-  var yCoordinate = y - MAIN_PIN_HEIGHT / 2;
+  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
+  var yCoordinate = +y + +(MAIN_PIN_HEIGHT / 2);
   inputAddress.value = xCoordinate + ', ' + yCoordinate;
 };
 
 // Функция получения координат метки на активной странице
 var getCoordinateActive = function () {
-  var xCoordinate = x - MAIN_PIN_WIDTH / 2;
+  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
   var yCoordinate = +y + +(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER);
   inputAddress.value = xCoordinate + ', ' + yCoordinate;
 };
@@ -316,15 +318,21 @@ var lockPage = function () {
   getCoordinateInactive();
 };
 
-// Функция закрытия попара с помощью Esc
-var onCardCloseEscPress = function (elem) {
-  document.addEventListener('keydown', function (evt) {
-    if (evt. keyCode === ESC_KEYCODE) {
-      if (typeof (elem) !== 'undefined' && elem !== null) {
-        elem.remove();
-      }
+// Функиция нажатия на Esc
+var onEscKeyPress = function (popup, evt) {
+  if (evt && evt.keyCode === ESC_KEYCODE) {
+    if (typeof (popup) !== 'undefined' && popup !== null) {
+      popup.remove();
     }
+  }
+};
+
+// Функция закрытия попара с помощью Esc
+var onCardCloseEscPress = function (popup) {
+  document.addEventListener('keydown', function (evt) {
+    onEscKeyPress(popup, evt);
   });
+  document.removeEventListener('keydown', onEscKeyPress);
 };
 
 // Функция закрытия карточки с помощью мышки
