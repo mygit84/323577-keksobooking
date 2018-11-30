@@ -18,6 +18,7 @@ var MIN_COORDINATE_X = 0;
 var MAX_COORDINATE_X = 1200;
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
+var ESC_KEYCODE = 27;
 var OFFER_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -212,7 +213,6 @@ var renderCardPhotos = function (newPhotos) {
 
 // Функция отрисовки фрагмента DOM-элементов <img> списка i-ых элементов массива значения photos
 // из ключа-объекта offer объекта ad в родительском DOM-элементе .popup__photos
-
 var drawCardPhotos = function (ad) {
   cardElement.querySelector('.popup__photos').appendChild(renderCardPhotos(ad));
 };
@@ -314,16 +314,43 @@ var lockPage = function () {
   lockFilters();
   lockForm();
   getCoordinateInactive();
-  getCoordinateInactive();
 };
 
-lockPage();
-var onPinClick = function (elem, index) {
-  elem.addEventListener('click', function () {
-    showMap.insertBefore(getMapCard(ads[index]), mapFiltersContainer);
+// Функция закрытия попара с помощью Esc
+var onCardCloseEscPress = function (elem) {
+  document.addEventListener('keydown', function (evt) {
+    if (evt. keyCode === ESC_KEYCODE) {
+      if (typeof (elem) !== 'undefined' && elem !== null) {
+        elem.remove();
+      }
+    }
   });
 };
 
+// Функция закрытия карточки с помощью мышки
+var onPopupCloseClick = function (elem, elemClose) {
+  elemClose.addEventListener('click', function () {
+    elem.remove();
+  });
+};
+
+// Функция закрытия карточки
+var onPopupClose = function () {
+  var popup = showMap.querySelector('.popup');
+  var popupClose = popup.querySelector('.popup__close');
+  onCardCloseEscPress(popup);
+  onPopupCloseClick(popup, popupClose);
+};
+
+// Функция обработки события по клику мыши на метку
+var onPinClick = function (elem, index) {
+  elem.addEventListener('click', function () {
+    showMap.insertBefore(getMapCard(ads[index]), mapFiltersContainer);
+    onPopupClose();
+  });
+};
+
+// Функция обработки клика мышью по меткам
 var onMapPinsClick = function () {
   var mapPins = containerPin.querySelectorAll('button:not(.map__pin--main)');
 
@@ -335,7 +362,8 @@ var onMapPinsClick = function () {
   }
 };
 
-mapPinMain.addEventListener('click', function () {
+// Функция активного состояния страницы
+var unlockPage = function () {
   showMap.classList.remove('map--faded');
   containerForm.classList.remove('ad-form--disabled');
   unlockFilters();
@@ -343,4 +371,9 @@ mapPinMain.addEventListener('click', function () {
   getCoordinateActive();
   drawMapPins();
   onMapPinsClick();
+};
+
+lockPage();
+mapPinMain.addEventListener('mouseup', function () {
+  unlockPage();
 });
