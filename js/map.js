@@ -150,9 +150,14 @@ var renderMapPins = function () {
   return pinsFragment;
 };
 
+var mapActivePins = renderMapPins();
+
 // Функция отрисовки фрагмента DOM-элементов 'Метка на карте' в родительском DOM-элементе .map__pins
 var drawMapPins = function () {
-  containerPin.appendChild(renderMapPins());
+
+  if (showMap.classList.contains('map--faded')) {
+    return 0;
+  } return containerPin.appendChild(mapActivePins);
 };
 
 // Функция создания i-го элемента списка удобств
@@ -207,6 +212,7 @@ var renderCardPhotos = function (newPhotos) {
 
 // Функция отрисовки фрагмента DOM-элементов <img> списка i-ых элементов массива значения photos
 // из ключа-объекта offer объекта ad в родительском DOM-элементе .popup__photos
+
 var drawCardPhotos = function (ad) {
   cardElement.querySelector('.popup__photos').appendChild(renderCardPhotos(ad));
 };
@@ -299,7 +305,7 @@ var getCoordinateInactive = function () {
 // Функция получения координат метки на активной странице
 var getCoordinateActive = function () {
   var xCoordinate = x - MAIN_PIN_WIDTH / 2;
-  var yCoordinate = + y + +(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER);
+  var yCoordinate = +y + +(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER);
   inputAddress.value = xCoordinate + ', ' + yCoordinate;
 };
 
@@ -313,27 +319,17 @@ var lockPage = function () {
 
 lockPage();
 
-var checkPinClass = function (elem, ad) {
-  if (elem.classList.contains('map__pin--main')) {
-    return checkPinClass;
-  } else {
-    showMap.insertBefore(getMapCard(ad[0]), mapFiltersContainer);
-  }
-  return checkPinClass;
-};
-
 var onMapPinClick = function () {
-  var mapPins = containerPin.querySelectorAll('.map__pin');
+  var mapPins = containerPin.querySelectorAll('button:not(.map__pin--main)');
 
   for (var i = 0; i < mapPins.length; i++) {
     var mapPin = containerPin.querySelector('.map__pin');
     mapPin = mapPins[i];
-
     mapPin.addEventListener('click', function () {
-      checkPinClass(mapPin, ads);
+      showMap.insertBefore(getMapCard(ads[0]), mapFiltersContainer);
     });
   }
-}
+};
 
 mapPinMain.addEventListener('click', function () {
   showMap.classList.remove('map--faded');
