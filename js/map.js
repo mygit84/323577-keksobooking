@@ -256,7 +256,7 @@ var getMapCard = function (ad) {
   cardElement.querySelector('.popup__photos').src = drawCardPhotos(ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
-  document.addEventListener('keydown', onEscKeyPress);
+  document.addEventListener('keydown', onCardCloseEscPress);
 
   return cardElement;
 };
@@ -318,21 +318,18 @@ var lockPage = function () {
   getCoordinateInactive();
 };
 
-// Функиция нажатия на Esc
-var onEscKeyPress = function (popup, evt) {
-  if (evt && evt.keyCode === ESC_KEYCODE) {
-    if (typeof (popup) !== 'undefined' && popup !== null) {
-      popup.remove();
-    }
-  }
-};
-
 // Функция закрытия попара с помощью Esc
-var onCardCloseEscPress = function (popup) {
-  document.addEventListener('keydown', function (evt) {
-    onEscKeyPress(popup, evt);
-  });
-  document.removeEventListener('keydown', onEscKeyPress);
+var onCardCloseEscPress = function (elem) {
+  return function () {
+    document.addEventListener('click', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        if (typeof (elem) !== 'undefined' && elem !== null) {
+          elem.remove();
+        }
+      }
+    });
+    document.removeEventListener('keydown', onCardCloseEscPress);
+  };
 };
 
 // Функция закрытия карточки с помощью мышки
@@ -346,6 +343,7 @@ var onPopupCloseClick = function (elem, elemClose) {
 var onPopupClose = function () {
   var popup = showMap.querySelector('.popup');
   var popupClose = popup.querySelector('.popup__close');
+
   onCardCloseEscPress(popup);
   onPopupCloseClick(popup, popupClose);
 };
