@@ -9,12 +9,16 @@ var MIN_GUESTS = 1;
 var MAX_GUESTS = 10;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 62;
+var MAIN_PIN_HEIGHT = 62;
+var MAIN_PIN_AFTER = 22;
 var PHOTO_WIDTH = 45;
 var PHOTO_HEIGHT = 40;
 var MIN_COORDINATE_X = 0;
 var MAX_COORDINATE_X = 1200;
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
+var ESC_KEYCODE = 27;
 var OFFER_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -41,19 +45,21 @@ var similarMapCard = document.querySelector('#card').content.querySelector('.map
 var mapFiltersContainer = showMap.querySelector('.map__filters-container');
 var ads = [];
 var cardElement = similarMapCard.cloneNode(true);
+var mapPinMain = containerPin.querySelector('.map__pin--main');
+var containerForm = document.querySelector('.ad-form');
+var containerFilters = showMap.querySelector('.map__filters');
+var inputAddress = containerForm.querySelector('#address');
+var x = mapPinMain.style.left.slice(0, -2);
+var y = mapPinMain.style.top.slice(0, -2);
 
 // Функция генерации числа из интервала чисел от min, до max, не включая
 // верхнюю границу
-// Входной параметр: min (нижняя граница), max (верхняя граница)
-// Выходной параметр: rand (случайное число из диапазона)
 var getIntervalNum = function (min, max) {
   var rand = Math.floor(Math.random() * (max - min)) + min;
   return rand;
 };
 
 // Функция получения случайного элемента из массива, с помощью генерации случайного числа индекса
-// Входной параметр: randomArr (массив)
-// Выходной параметр: randomArr[rand] (случайно выбранный элемент массива того же массива)
 var getRandomValue = function (randomArr) {
   var rand = Math.floor(Math.random() * randomArr.length);
   return randomArr[rand];
@@ -61,8 +67,6 @@ var getRandomValue = function (randomArr) {
 
 // Функция перемешивания элементов массива на основе алгоритма Фишера-Йетса:
 // последний элемент массива, меняем местами со случайно выбранным элементом массива (включая и его самого) и так по цепочке
-// Входной параметр: arr (массив)
-// Выходной параметр: arr (тот же массив, но с элементами в другом порядке)
 var getRandomArr = function (arr) {
   var j;
   var temp;
@@ -76,8 +80,6 @@ var getRandomArr = function (arr) {
 };
 
 // Функция генерации массива случайной длинны из элементов массива OFFER_FEATURES в случайном порядке
-// Входной параметр: нет (данные берутся из глобальной константы OFFER_FEATURES)
-// Выходные данные: newArrFeatures (массив случайной длинны из элементов массива OFFER_FEATURES в случайном порядке)
 var getNewArrayFeatures = function (arr) {
 
   var randomFeatures = getRandomArr(arr);
@@ -87,8 +89,6 @@ var getNewArrayFeatures = function (arr) {
 };
 
 // Функция создания одного объекта (ассоциативного массива) ad, хранящего ключ: значение
-// Входящий параметр: index (переменная для дальнейшей записи в нее индекса элемента в массиве)
-// Выходной параметр: ad (ассоциативный массив, хранящий ключ: значение)
 var getObjectAd = function (index) {
   var ad = {
     author: {
@@ -119,9 +119,6 @@ var getObjectAd = function (index) {
 
 // Функция создания массива объектов ad (ассоциативных массивов, хранящих ключ: значение,
 // каждого i-го объекта)
-// Входной параметр: нет
-// Выходной параметр: глобальная перменная ads (массив ассоциативных массивов, хранящих
-// ключ: занчение каждого i-го объекта)
 var getObjectsAds = function () {
   ads = [];
 
@@ -132,8 +129,6 @@ var getObjectsAds = function () {
 };
 
 // Функция создания одного DOM-элемента 'Метка на карте', на основе данных из объекта ad
-// Входной параметр: ad (ассоциативный массив, хранящий ключ: значение)
-// Выходной параметр: pinElement (DOM-элемент 'Метка на карте', с данными из объекта ad)
 var getMapPin = function (ad) {
   var pinElement = similarMapPin.cloneNode(true);
 
@@ -147,25 +142,23 @@ var getMapPin = function (ad) {
 
 // Функция создания фрагмента DOM-элементов 'Метка на карте', на основе данных из глобальной переменной
 // ads (массива ассоциативных массивов, хранящих ключ: значение каждого i-го объекта ad)
-// Входной параметр: нет (данные берутся из глобальной переменной ads массива ассоциативных массивов,
-// хранящих ключ: значение каждого i-го объекта ad)
-// Выходной параметр: pinsFragment (фрагмент DOM-элементов 'Метка на карте', каждый i-ый DOM-элемент заполнен на
-// основе данных из i-го объкта ad массива ads)
 var renderMapPins = function () {
   var pinsFragment = document.createDocumentFragment();
   ads = getObjectsAds();
-
   for (var i = 0; i < ads.length; i++) {
     pinsFragment.appendChild(getMapPin(ads[i]));
   }
   return pinsFragment;
 };
 
+var mapActivePins = renderMapPins();
+
 // Функция отрисовки фрагмента DOM-элементов 'Метка на карте' в родительском DOM-элементе .map__pins
-// Входной параметр: нет
-// Выходной параметр: нет
 var drawMapPins = function () {
-  containerPin.appendChild(renderMapPins());
+
+  if (showMap.classList.contains('map--faded')) {
+    return 0;
+  } return containerPin.appendChild(mapActivePins);
 };
 
 // Функция создания i-го элемента списка удобств
@@ -179,8 +172,6 @@ var getElementFeature = function (newFeature, index) {
 
 // Функция создания фрагмента DOM-элементов <li> списка удобств, созданный на основе длинны
 // массива i-ых элементов значения features из ключа-объекта offer объекта ad
-// Входной параметр: newFeature (какой-то гипотетический объект хранящий ключ: значение offer: feature)
-// Выходной параметр: featuresFragment (фрагмент DOM-элементов <li>)
 var renderElementFeatures = function (newFeatures) {
   cardElement.querySelector('.popup__features').innerHTML = '';
   var featuresFragment = document.createDocumentFragment();
@@ -193,8 +184,6 @@ var renderElementFeatures = function (newFeatures) {
 
 // Функция отрисовки фрагмента DOM-элементов <li> списка i-ых элементов массива значения features
 // из ключа-объекта offer объекта ad в родительском DOM-элементе .popup__features
-// Входной параметр: newFeature (какой-то гипотетический объект хранящий ключ: значение offer: feature)
-// Выходной параметр: нет
 var drawElementFeatures = function (ad) {
   cardElement.querySelector('.popup__features').appendChild(renderElementFeatures(ad));
 };
@@ -212,8 +201,6 @@ var getCardPhoto = function (newPhoto, index) {
 
 // Функция создания фрагмента DOM-элементов <img>, созданный на основе длинны
 // массива i-ых элементов значения photos из ключа-объекта offer объекта ad
-// Входной параметр: newPhotos (какой-то гипотетический объект хранящий ключ: значение offer: photos)
-// Выходные параметр: photosFragment (фрагмент DOM-элементов <img>)
 var renderCardPhotos = function (newPhotos) {
   cardElement.querySelector('.popup__photos').innerHTML = '';
   var photosFragment = document.createDocumentFragment();
@@ -226,7 +213,6 @@ var renderCardPhotos = function (newPhotos) {
 
 // Функция отрисовки фрагмента DOM-элементов <img> списка i-ых элементов массива значения photos
 // из ключа-объекта offer объекта ad в родительском DOM-элементе .popup__photos
-// Выходные параметр: нет
 var drawCardPhotos = function (ad) {
   cardElement.querySelector('.popup__photos').appendChild(renderCardPhotos(ad));
 };
@@ -256,8 +242,6 @@ var getCardType = function (cardType) {
 };
 
 // Функция создания DOM-элемента <article>, заполненного на основе данных из объекта ad
-// Входной параметр: ad (объект, ассоциативный массив хранящий ключ:значение)
-// Выходной параметр: cardElement (DOM-элемент, заполненный на основе данных из объекта ad)
 var getMapCard = function (ad) {
   getCardType(ad);
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
@@ -272,10 +256,127 @@ var getMapCard = function (ad) {
   cardElement.querySelector('.popup__photos').src = drawCardPhotos(ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
+  document.addEventListener('keydown', onCardCloseEscPress(cardElement));
+
   return cardElement;
 };
 
-drawMapPins();
-getRandomArr(ads);
-showMap.insertBefore(getMapCard(ads[0]), mapFiltersContainer);
-showMap.classList.remove('map--faded');
+
+// ***********************************MODULE4-TASK1**********************************//
+
+
+// Функция блокировки полей фильтра
+var lockFilters = function () {
+  for (var i = 0; i < containerFilters.children.length; i++) {
+    var fieldsetElement = containerFilters.children[i];
+    fieldsetElement.setAttribute('disabled', 'disabled');
+  }
+};
+
+// Функция блокировки полей формы
+var lockForm = function () {
+  for (var i = 0; i < containerForm.children.length; i++) {
+    var fieldsetElement = containerForm.children[i];
+    fieldsetElement.setAttribute('disabled', 'disabled');
+  }
+};
+
+// Функция разблокировки полей фильтра
+var unlockFilters = function () {
+  for (var i = 0; i < containerFilters.children.length; i++) {
+    var fieldsetElement = containerFilters.children[i];
+    fieldsetElement.removeAttribute('disabled', 'disabled');
+  }
+};
+
+// Функция разблокировки полей формы
+var unlockForm = function () {
+  for (var i = 0; i < containerForm.children.length; i++) {
+    var formElement = containerForm.children[i];
+    formElement.removeAttribute('disabled', 'disabled');
+  }
+};
+
+// Функция получения координат метки на неактивной странице
+var getCoordinateInactive = function () {
+  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
+  var yCoordinate = +y + +(MAIN_PIN_HEIGHT / 2);
+  inputAddress.value = xCoordinate + ', ' + yCoordinate;
+};
+
+// Функция получения координат метки на активной странице
+var getCoordinateActive = function () {
+  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
+  var yCoordinate = +y + +(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER);
+  inputAddress.value = xCoordinate + ', ' + yCoordinate;
+};
+
+// Функция неактивного состояния страницы
+var lockPage = function () {
+  lockFilters();
+  lockForm();
+  getCoordinateInactive();
+};
+
+// Функция закрытия попара с помощью Esc
+var onCardCloseEscPress = function (elem) {
+  return function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      if (typeof (elem) !== 'undefined' && elem !== null) {
+        elem.remove();
+      }
+    }
+    document.removeEventListener('keydown', onCardCloseEscPress);
+  };
+};
+
+// Функция закрытия карточки с помощью мышки
+var onPopupCloseClick = function (elem, elemClose) {
+  elemClose.addEventListener('click', function () {
+    elem.remove();
+  });
+};
+
+// Функция закрытия карточки
+var onPopupClose = function () {
+  var popup = showMap.querySelector('.popup');
+  var popupClose = popup.querySelector('.popup__close');
+
+  onPopupCloseClick(popup, popupClose);
+};
+
+// Функция обработки события по клику мыши на метку
+var onPinClick = function (elem, index) {
+  elem.addEventListener('click', function () {
+    showMap.insertBefore(getMapCard(ads[index]), mapFiltersContainer);
+    onPopupClose();
+  });
+};
+
+// Функция обработки клика мышью по меткам
+var onMapPinsClick = function () {
+  var mapPins = containerPin.querySelectorAll('button:not(.map__pin--main)');
+
+  for (var i = 0; i < mapPins.length; i++) {
+
+    var mapPin = containerPin.querySelector('.map__pin');
+    mapPin = mapPins[i];
+    onPinClick(mapPin, i);
+  }
+};
+
+// Функция активного состояния страницы
+var unlockPage = function () {
+  showMap.classList.remove('map--faded');
+  containerForm.classList.remove('ad-form--disabled');
+  unlockFilters();
+  unlockForm();
+  getCoordinateActive();
+  drawMapPins();
+  onMapPinsClick();
+};
+
+lockPage();
+mapPinMain.addEventListener('mouseup', function () {
+  unlockPage();
+});
