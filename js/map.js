@@ -299,15 +299,15 @@ var unlockForm = function () {
 
 // Функция получения координат метки на неактивной странице
 var getCoordinateInactive = function () {
-  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
-  var yCoordinate = +y + +(MAIN_PIN_HEIGHT / 2);
+  var xCoordinate = parseInt(x, 10) + parseInt(MAIN_PIN_WIDTH / 2, 10);
+  var yCoordinate = parseInt(y, 10) + parseInt(MAIN_PIN_HEIGHT / 2, 10);
   inputAddress.value = xCoordinate + ', ' + yCoordinate;
 };
 
 // Функция получения координат метки на активной странице
 var getCoordinateActive = function () {
-  var xCoordinate = +x + +(MAIN_PIN_WIDTH / 2);
-  var yCoordinate = +y + +(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER);
+  var xCoordinate = parseInt(x, 10) + parseInt(MAIN_PIN_WIDTH / 2, 10);
+  var yCoordinate = parseInt(y, 10) + parseInt(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER, 10);
   inputAddress.value = xCoordinate + ', ' + yCoordinate;
 };
 
@@ -316,6 +316,8 @@ var lockPage = function () {
   lockFilters();
   lockForm();
   getCoordinateInactive();
+  onTypeHousingChange();
+  onRoomNumberValue();
 };
 
 // Функция закрытия попара с помощью Esc
@@ -374,6 +376,73 @@ var unlockPage = function () {
   getCoordinateActive();
   drawMapPins();
   onMapPinsClick();
+  capacity.addEventListener('change', onRoomNumberValue);
+  roomNumbers.addEventListener('change', onRoomNumberValue);
+  typeElement.addEventListener('change', onTypeHousingChange);
+};
+
+
+// ********************************MODULE4-TASK2******************************//
+
+
+var typeElement = containerForm.querySelector('#type');
+var priceElement = containerForm.querySelector('#price');
+var roomNumbers = containerForm.querySelector('#room_number');
+var capacity = containerForm.querySelector('#capacity');
+var fieldsetTime = containerForm.querySelector('.ad-form__element--time');
+var timeSelects = ['timein', 'timeout'];
+var typeHousing = {
+  bungalo: {
+    minPrice: 0
+  },
+  flat: {
+    minPrice: 1000
+  },
+  house: {
+    minPrice: 5000
+  },
+  palace: {
+    minPrice: 10000
+  }
+};
+
+// Функция синхронизации полей времени въезда и выезда
+fieldsetTime.addEventListener('change', function (evt) {
+  var target = evt.target;
+  var selects = fieldsetTime.querySelectorAll('select');
+
+  for (var i = 0; i < selects.length; i++) {
+    if (timeSelects.indexOf(selects[i].id) !== -1) {
+      selects[i].value = target.value;
+    }
+  }
+});
+
+// Функция валидации полей типа жилья и цены
+var onTypeHousingChange = function () {
+  var type = typeElement.value;
+  var minPrice = typeHousing[type].minPrice;
+
+  priceElement.placeholder = minPrice;
+  priceElement.min = minPrice;
+};
+
+// Функция валидации полей кол-ва комнат и гостей
+var onRoomNumberValue = function () {
+  var roomNumbersValue = parseInt(roomNumbers.value, 10);
+  var capacityValie = parseInt(capacity.value, 10);
+
+  if (roomNumbersValue === 1 && roomNumbersValue < capacityValie) {
+    capacity.setCustomValidity('Количество гостей не должно быть больше 1');
+  } else if (roomNumbersValue === 2 && roomNumbersValue < capacityValie) {
+    capacity.setCustomValidity('Количество гостей не должно быть больше 2');
+  } else if (roomNumbersValue === 3 && capacityValie === 0) {
+    capacity.setCustomValidity('Количество гостей не должно быть больше 3');
+  } else if (roomNumbersValue === 100 && capacityValie !== 0) {
+    capacity.setCustomValidity('Все комнаты не для гостей');
+  } else {
+    capacity.setCustomValidity('');
+  }
 };
 
 lockPage();
