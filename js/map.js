@@ -431,14 +431,15 @@ var onTypeHousingChange = function () {
 var onRoomNumberValue = function () {
   var roomNumbersValue = parseInt(roomNumbers.value, 10);
   var capacityValie = parseInt(capacity.value, 10);
+  var noGuests = (capacityValie === 0);
 
-  if (roomNumbersValue === 1 && roomNumbersValue < capacityValie) {
+  if (roomNumbersValue === 1 && roomNumbersValue < capacityValie || roomNumbersValue === 1 && noGuests) {
     capacity.setCustomValidity('Количество гостей не должно быть больше 1');
-  } else if (roomNumbersValue === 2 && roomNumbersValue < capacityValie) {
+  } else if (roomNumbersValue === 2 && roomNumbersValue < capacityValie || roomNumbersValue === 2 && noGuests) {
     capacity.setCustomValidity('Количество гостей не должно быть больше 2');
-  } else if (roomNumbersValue === 3 && capacityValie === 0) {
+  } else if (roomNumbersValue === 3 && noGuests) {
     capacity.setCustomValidity('Количество гостей не должно быть больше 3');
-  } else if (roomNumbersValue === 100 && capacityValie !== 0) {
+  } else if (roomNumbersValue === 100 && !noGuests) {
     capacity.setCustomValidity('Все комнаты не для гостей');
   } else {
     capacity.setCustomValidity('');
