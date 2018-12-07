@@ -9,9 +9,8 @@ var MIN_GUESTS = 1;
 var MAX_GUESTS = 10;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var MAIN_PIN_WIDTH = 62;
-var MAIN_PIN_HEIGHT = 62;
-var MAIN_PIN_AFTER = 22;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
 var PHOTO_WIDTH = 45;
 var PHOTO_HEIGHT = 40;
 var MIN_COORDINATE_X = 0;
@@ -49,8 +48,8 @@ var mapPinMain = containerPin.querySelector('.map__pin--main');
 var containerForm = document.querySelector('.ad-form');
 var containerFilters = showMap.querySelector('.map__filters');
 var inputAddress = containerForm.querySelector('#address');
-var x = mapPinMain.style.left.slice(0, -2);
-var y = mapPinMain.style.top.slice(0, -2);
+var isPageActive = false;
+
 
 // Функция генерации числа из интервала чисел от min, до max, не включая
 // верхнюю границу
@@ -155,10 +154,8 @@ var mapActivePins = renderMapPins();
 
 // Функция отрисовки фрагмента DOM-элементов 'Метка на карте' в родительском DOM-элементе .map__pins
 var drawMapPins = function () {
-
-  if (showMap.classList.contains('map--faded')) {
-    return 0;
-  } return containerPin.appendChild(mapActivePins);
+  return isPageActive ?
+    containerPin.appendChild(mapActivePins) : 0;
 };
 
 // Функция создания i-го элемента списка удобств
@@ -297,25 +294,38 @@ var unlockForm = function () {
   }
 };
 
-// Функция получения координат метки на неактивной странице
-var getCoordinateInactive = function () {
-  var xCoordinate = parseInt(x, 10) + parseInt(MAIN_PIN_WIDTH / 2, 10);
-  var yCoordinate = parseInt(y, 10) + parseInt(MAIN_PIN_HEIGHT / 2, 10);
-  inputAddress.value = xCoordinate + ', ' + yCoordinate;
+// Функция получения координаты Х главного пина
+var getCoordX = function () {
+  var x = mapPinMain.getBoundingClientRect();
+  return Math.round(((x.left + x.right) / 2) + pageXOffset);
 };
 
-// Функция получения координат метки на активной странице
-var getCoordinateActive = function () {
-  var xCoordinate = parseInt(x, 10) + parseInt(MAIN_PIN_WIDTH / 2, 10);
-  var yCoordinate = parseInt(y, 10) + parseInt(MAIN_PIN_HEIGHT + MAIN_PIN_AFTER, 10);
-  inputAddress.value = xCoordinate + ', ' + yCoordinate;
+// Функция получения координаты Y главного пина
+var getCoordY = function () {
+  var y = mapPinMain.getBoundingClientRect();
+
+  return isPageActive ?
+    Math.round((((y.top + y.bottom) / 2) + MAIN_PIN_HEIGHT / 2) + pageYOffset) :
+    Math.round(((y.top + y.bottom) / 2) + pageYOffset);
+};
+
+// Функция получения отступа левого края карты от края окна браузера
+var getCoordsMapX = function () {
+  var max = showMap.getBoundingClientRect();
+  return Math.round(max.left + pageXOffset);
+};
+
+// Функция получения адреса главного пина
+var getCoordsMainPin = function () {
+  var pinAddress = getCoordX() - getCoordsMapX() + ', ' + getCoordY();
+  inputAddress.value = pinAddress;
 };
 
 // Функция неактивного состояния страницы
 var lockPage = function () {
   lockFilters();
   lockForm();
-  getCoordinateInactive();
+  getCoordsMainPin();
   onTypeHousingChange();
   onRoomNumberValue();
 };
@@ -369,16 +379,19 @@ var onMapPinsClick = function () {
 
 // Функция активного состояния страницы
 var unlockPage = function () {
+  isPageActive = true;
   showMap.classList.remove('map--faded');
   containerForm.classList.remove('ad-form--disabled');
   unlockFilters();
   unlockForm();
-  getCoordinateActive();
+  getCoordsMainPin();
   drawMapPins();
   onMapPinsClick();
   capacity.addEventListener('change', onRoomNumberValue);
   roomNumbers.addEventListener('change', onRoomNumberValue);
   typeElement.addEventListener('change', onTypeHousingChange);
+  document.removeEventListener('mousemove', onMainPinMouseMove);
+  document.removeEventListener('mouseup', onMainPinMouseUp);
 };
 
 
@@ -446,7 +459,79 @@ var onRoomNumberValue = function () {
   }
 };
 
+
+// ***********************************MODULE5-TASK1****************************//
 lockPage();
-mapPinMain.addEventListener('mouseup', function () {
+
+var startCoords = {
+  x: 0,
+  y: 0
+};
+
+// Функция нажатия кнопки мыши по главному пину
+var onMainPinMouseDown = function (downEvt) {
+  downEvt.preventDefault();
+
+  startCoords = {
+    x: downEvt.clientX,
+    y: downEvt.clientY
+  };
+
+  document.addEventListener('mousemove', onMainPinMouseMove);
+  document.addEventListener('mouseup', onMainPinMouseUp);
+};
+
+// Функция перетаскивания главного пина по карте
+var onMainPinMouseMove = function (moveEvt) {
+  moveEvt.preventDefault();
+
+  var shift = {
+    x: startCoords.x - moveEvt.clientX,
+    y: startCoords.y - moveEvt.clientY
+  };
+
+  startCoords = {
+    x: moveEvt.clientX,
+    y: moveEvt.clientY
+  };
+
+  var topCoords = mapPinMain.offsetTop - shift.y;
+  var leftCoords = mapPinMain.offsetLeft - shift.x;
+
+  var limits = {
+    top: MIN_COORDINATE_Y - MAIN_PIN_WIDTH,
+    right: MAX_COORDINATE_X - MAIN_PIN_HEIGHT / 2,
+    bottom: MAX_COORDINATE_Y - MAIN_PIN_HEIGHT,
+    left: MIN_COORDINATE_X - MAIN_PIN_WIDTH / 2
+  };
+
+  if (topCoords < limits.top) {
+    topCoords = limits.top;
+  }
+
+  if (topCoords > limits.bottom) {
+    topCoords = limits.bottom;
+  }
+
+  if (leftCoords < limits.left) {
+    leftCoords = limits.left;
+  }
+
+  if (leftCoords > limits.right) {
+    leftCoords = limits.right;
+  }
+
+  mapPinMain.style.top = topCoords + 'px';
+  mapPinMain.style.left = leftCoords + 'px';
+
+  getCoordsMainPin();
+};
+
+// Функция отжатия кнопки мыши на главном пине
+var onMainPinMouseUp = function (upEvt) {
+  upEvt.preventDefault();
+
   unlockPage();
-});
+};
+
+mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
