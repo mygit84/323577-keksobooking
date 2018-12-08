@@ -394,10 +394,7 @@ var unlockPage = function () {
   document.removeEventListener('mouseup', onMainPinMouseUp);
 };
 
-
 // ********************************MODULE4-TASK2******************************//
-
-
 var typeElement = containerForm.querySelector('#type');
 var priceElement = containerForm.querySelector('#price');
 var roomNumbers = containerForm.querySelector('#room_number');
