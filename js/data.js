@@ -8,13 +8,6 @@
   var MAX_ROOM = 5;
   var MIN_GUESTS = 1;
   var MAX_GUESTS = 10;
-  var MIN_COORDINATE_X = 0;
-  var MAX_COORDINATE_X = 1200;
-  var MIN_COORDINATE_Y = 130;
-  var MAX_COORDINATE_Y = 630;
-  var OFFER_TYPE = ['palace', 'flat', 'house', 'bungalo'];
-  var OFFER_TIME = ['12:00', '13:00', '14:00'];
-  var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var OFFER_TITLES = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -25,6 +18,9 @@
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'
   ];
+  var OFFER_TYPE = ['palace', 'flat', 'house', 'bungalo'];
+  var OFFER_TIME = ['12:00', '13:00', '14:00'];
+  var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var OFFER_PHOTOS = [
     'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
@@ -76,9 +72,9 @@
       },
       offer: {
         title: OFFER_TITLES[index],
-        address: getIntervalNum(MIN_COORDINATE_X, MAX_COORDINATE_X)
+        address: getIntervalNum(0, 1200)
         + ', '
-        + getIntervalNum(MIN_COORDINATE_Y, MAX_COORDINATE_Y),
+        + getIntervalNum(130, 630),
         price: getIntervalNum(MIN_PRICE, MAX_PRICE),
         type: getRandomValue(OFFER_TYPE),
         rooms: getIntervalNum(MIN_ROOM, MAX_ROOM),
@@ -90,8 +86,8 @@
         photos: getRandomArr(OFFER_PHOTOS)
       },
       coordinate: {
-        coordinateX: getIntervalNum(MIN_COORDINATE_X, MAX_COORDINATE_X),
-        coordinateY: getIntervalNum(MIN_COORDINATE_Y, MAX_COORDINATE_Y)
+        coordinateX: getIntervalNum(0, 1200),
+        coordinateY: getIntervalNum(130, 630)
       }
     };
     return ad;
@@ -100,22 +96,16 @@
   // Функция создания массива объектов ad (ассоциативных массивов, хранящих ключ: значение,
   // каждого i-го объекта)
   var getObjectsAds = function () {
-     var ads = [];
+    ads = [];
 
     for (var i = 0; i < OBJECT_NUMBER; i++) {
       ads.push(getObjectAd(i));
     }
-
     return ads;
   };
 
-
   window.data = {
-    minCoordX: MIN_COORDINATE_X,
-    maxCoordX: MAX_COORDINATE_X,
-    minCoordY: MIN_COORDINATE_Y,
-    maxCoordY: MAX_COORDINATE_Y,
-    adObject: getObjectAd,
-    adsArray: getObjectsAds
+    getObjectAd: getObjectAd,
+    getObjectsAds: getObjectsAds
   };
 })();

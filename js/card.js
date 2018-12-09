@@ -87,35 +87,25 @@
   };
 
   // Функция создания DOM-элемента <article>, заполненного на основе данных из объекта ad
-  var getMapCard = function (ad) {
-    getCardType(ad);
-    cardElement.querySelector('.popup__title').textContent = ad.offer.title;
-    cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для '
-    + ad.offer.guests + ' гостей';
-    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin
-    + ', выезд до ' + ad.offer.checkout;
-    cardElement.querySelector('.popup__feature').classList = drawElementFeatures(ad);
-    cardElement.querySelector('.popup__description').textContent = ad.offer.description;
-    cardElement.querySelector('.popup__photos').src = drawCardPhotos(ad);
-    cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
+  var getMapCard = function (adObject) {
 
-    document.addEventListener('keydown', onCardCloseEscPress(cardElement));
+    getCardType(adObject);
+    cardElement.querySelector('.popup__title').textContent = adObject.offer.title;
+    cardElement.querySelector('.popup__text--address').textContent = adObject.offer.address;
+    cardElement.querySelector('.popup__text--price').textContent = adObject.offer.price + '₽/ночь';
+    cardElement.querySelector('.popup__text--capacity').textContent = adObject.offer.rooms + ' комнаты для '
+    + adObject.offer.guests + ' гостей';
+    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + adObject.offer.checkin
+    + ', выезд до ' + adObject.offer.checkout;
+    cardElement.querySelector('.popup__feature').classList = drawElementFeatures(adObject);
+    cardElement.querySelector('.popup__description').textContent = adObject.offer.description;
+    cardElement.querySelector('.popup__photos').src = drawCardPhotos(adObject);
+    cardElement.querySelector('.popup__avatar').src = adObject.author.avatar;
+
+
+    document.addEventListener('keydown', window.map.onCardCloseEscPress(cardElement));
 
     return cardElement;
-  };
-
-  // Функция закрытия попара с помощью Esc
-  var onCardCloseEscPress = function (elem) {
-    return function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        if (typeof (elem) !== 'undefined' && elem !== null) {
-          elem.remove();
-        }
-      }
-      document.removeEventListener('keydown', onCardCloseEscPress);
-    };
   };
 
   // Функция закрытия карточки с помощью мышки
@@ -129,11 +119,11 @@
   var onPopupClose = function () {
     var popup = document.querySelector('.popup');
     var popupClose = popup.querySelector('.popup__close');
-
     onPopupCloseClick(popup, popupClose);
   };
 
   window.card = {
-    mapCard: getMapCard
+    getMapCard: getMapCard,
+    onPopupClose: onPopupClose
   };
 })();
