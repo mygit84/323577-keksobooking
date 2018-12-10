@@ -23,22 +23,6 @@
     }
   };
 
-  // Функция блокировки полей формы
-  var lockForm = function () {
-    for (var i = 0; i < containerForm.children.length; i++) {
-      var fieldsetElement = containerForm.children[i];
-      fieldsetElement.setAttribute('disabled', 'disabled');
-    }
-  };
-
-  // Функция разблокировки полей формы
-  var unlockForm = function () {
-    for (var i = 0; i < containerForm.children.length; i++) {
-      var formElement = containerForm.children[i];
-      formElement.removeAttribute('disabled', 'disabled');
-    }
-  };
-
   // Функция синхронизации полей времени въезда и выезда
   fieldsetTime.addEventListener('change', function (evt) {
     var target = evt.target;
@@ -80,14 +64,12 @@
   };
 
   window.form = {
-    containerForm: containerForm,
-    typeElement: typeElement,
-    roomNumbers: roomNumbers,
-    capacity: capacity,
-    lockForm: lockForm,
-    unlockForm: unlockForm,
-    onTypeHousingChange: onTypeHousingChange,
-    onRoomNumberValue: onRoomNumberValue
+    getContainerForm: containerForm,
+    getTypeElement: typeElement,
+    getRoomNumbers: roomNumbers,
+    getCapacity: capacity,
+    getTypeHousingChange: onTypeHousingChange,
+    getRoomNumberValue: onRoomNumberValue
   };
 
 })();

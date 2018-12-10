@@ -26,7 +26,6 @@
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
-  var ads = [];
 
   // Функция генерации числа из интервала чисел от min, до max, не включая
   // верхнюю границу
@@ -95,7 +94,7 @@
 
   // Функция создания массива объектов ad (ассоциативных массивов, хранящих ключ: значение,
   // каждого i-го объекта)
-  var getObjectsAds = function () {
+  var getObjectsAds = function (ads) {
     ads = [];
 
     for (var i = 0; i < OBJECT_NUMBER; i++) {

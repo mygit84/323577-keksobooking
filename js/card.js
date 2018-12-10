@@ -3,6 +3,7 @@
 (function () {
   var PHOTO_WIDTH = 45;
   var PHOTO_HEIGHT = 40;
+  var ESC_KEYCODE = 27;
   var similarMapCard = document.querySelector('#card').content.querySelector('.map__card');
   var cardElement = similarMapCard.cloneNode(true);
 
@@ -103,9 +104,19 @@
     cardElement.querySelector('.popup__avatar').src = adObject.author.avatar;
 
 
-    document.addEventListener('keydown', window.map.onCardCloseEscPress(cardElement));
+    document.addEventListener('keydown', onCardCloseEscPress(cardElement));
 
     return cardElement;
+  };
+
+  // Функция закрытия попара с помощью Esc
+  var onCardCloseEscPress = function (elem) {
+    return function (evt) {
+      if (evt.keyCode === ESC_KEYCODE && typeof (elem) !== 'undefined' && elem !== null) {
+        elem.remove();
+      }
+      document.removeEventListener('keydown', onCardCloseEscPress);
+    };
   };
 
   // Функция закрытия карточки с помощью мышки
@@ -124,6 +135,6 @@
 
   window.card = {
     getMapCard: getMapCard,
-    onPopupClose: onPopupClose
+    getPopupClose: onPopupClose
   };
 })();
