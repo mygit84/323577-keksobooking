@@ -34,6 +34,18 @@
     inputAddress.value = pinAddress;
   };
 
+  var getMap = function () {
+    return map;
+  };
+
+  var getMainPin = function () {
+    return mapPinMain;
+  };
+
+  var getContainerPin = function () {
+    return containerPin;
+  };
+
   // Функция неактивного состояния страниц
   var getLockPage = function (callback) {
     return function () {
@@ -42,9 +54,9 @@
   };
 
   window.map = {
-    getMap: map,
-    getMainPin: mapPinMain,
-    getContainerPin: containerPin,
+    getMap: getMap,
+    getMainPin: getMainPin,
+    getContainerPin: getContainerPin,
     getCoordsMainPin: getCoordsMainPin,
     getLockPage: getLockPage
   };

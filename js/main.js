@@ -8,8 +8,8 @@
   var MAX_COORDINATE_Y = 630;
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
-  var containerFilters = window.map.getMap.querySelector('.map__filters');
-  var mapFiltersContainer = window.map.getMap.querySelector('.map__filters-container');
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
+  var containerFilters = mapFiltersContainer.querySelector('.map__filters');
   var isPageActive = false;
   var startCoords = {
     x: 0,
@@ -40,7 +40,7 @@
   // Функция обработки события по клику мыши на метку
   var onPinClick = function (elem, index, arr) {
     elem.addEventListener('click', function () {
-      window.map.getMap.insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
+      window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.getPopupClose();
     });
   };
@@ -58,7 +58,7 @@
 
   var setLockPage = function () {
     getLockFieldset(containerFilters);
-    getLockFieldset(window.form.getContainerForm);
+    getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     window.form.getTypeHousingChange();
     window.form.getRoomNumberValue();
@@ -66,16 +66,16 @@
 
   var setUnlockPage = function () {
     isPageActive = true;
-    window.map.getMap.classList.remove('map--faded');
-    window.form.getContainerForm.classList.remove('ad-form--disabled');
-    window.pins.getMapPins(isPageActive, window.map.getContainerPin);
+    window.map.getMap().classList.remove('map--faded');
+    window.form.getContainerForm().classList.remove('ad-form--disabled');
+    window.pins.getMapPins(isPageActive, window.map.getContainerPin(), window.data.getObjectsAds());
     getLockFieldset(containerFilters);
-    getLockFieldset(window.form.getContainerForm);
+    getLockFieldset(window.form.getContainerForm());
     getAddressPin();
-    onMapPinsClick(window.pins.getPinsArray);
-    window.form.getCapacity.addEventListener('change', window.form.getRoomNumberValue);
-    window.form.getRoomNumbers.addEventListener('change', window.form.getRoomNumberValue);
-    window.form.getTypeElement.addEventListener('change', window.form.getTypeHousingChange);
+    onMapPinsClick(window.pins.getPinsArray());
+    window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);
+    window.form.getRoomNumbers().addEventListener('change', window.form.getRoomNumberValue);
+    window.form.getTypeElement().addEventListener('change', window.form.getTypeHousingChange);
     document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinMouseUp);
   };
@@ -107,8 +107,8 @@
       y: moveEvt.clientY
     };
 
-    var topCoords = window.map.getMainPin.offsetTop - shift.y;
-    var leftCoords = window.map.getMainPin.offsetLeft - shift.x;
+    var topCoords = window.map.getMainPin().offsetTop - shift.y;
+    var leftCoords = window.map.getMainPin().offsetLeft - shift.x;
 
     var limits = {
       top: MIN_COORDINATE_Y - MAIN_PIN_WIDTH,
@@ -133,8 +133,8 @@
       leftCoords = limits.right;
     }
 
-    window.map.getMainPin.style.top = topCoords + 'px';
-    window.map.getMainPin.style.left = leftCoords + 'px';
+    window.map.getMainPin().style.top = topCoords + 'px';
+    window.map.getMainPin().style.left = leftCoords + 'px';
 
     getAddressPin();
   };
@@ -147,5 +147,5 @@
   };
 
   window.map.getLockPage(setLockPage());
-  window.map.getMainPin.addEventListener('mousedown', onMainPinMouseDown);
+  window.map.getMainPin().addEventListener('mousedown', onMainPinMouseDown);
 })();

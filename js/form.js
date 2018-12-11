@@ -63,13 +63,28 @@
     }
   };
 
+  var getContainerForm = function () {
+    return containerForm;
+  };
+
+  var getTypeElement = function () {
+    return typeElement;
+  };
+
+  var getRoomNumbers = function () {
+    return roomNumbers;
+  };
+
+  var getCapacity = function () {
+    return capacity;
+  };
+
   window.form = {
-    getContainerForm: containerForm,
-    getTypeElement: typeElement,
-    getRoomNumbers: roomNumbers,
-    getCapacity: capacity,
+    getContainerForm: getContainerForm,
+    getTypeElement: getTypeElement,
+    getRoomNumbers: getRoomNumbers,
+    getCapacity: getCapacity,
     getTypeHousingChange: onTypeHousingChange,
     getRoomNumberValue: onRoomNumberValue
   };
-
 })();

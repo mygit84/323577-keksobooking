@@ -27,6 +27,7 @@
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
 
+
   // Функция генерации числа из интервала чисел от min, до max, не включая
   // верхнюю границу
   var getIntervalNum = function (min, max) {
