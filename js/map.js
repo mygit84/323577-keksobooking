@@ -3,9 +3,17 @@
 (function () {
   var map = document.querySelector('.map');
   var containerPin = map.querySelector('.map__pins');
-
   var mapPinMain = containerPin.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('#address');
+  var mainPinDefaultCootds = {
+    left: mapPinMain.style.left,
+    top: mapPinMain.style.top
+  };
+
+  var getDefaultMainPinCoords = function () {
+    mapPinMain.style.left = mainPinDefaultCootds.left;
+    mapPinMain.style.top = mainPinDefaultCootds.top;
+  };
 
   // Функция получения координаты Х главного пина
   var getCoordX = function () {
@@ -57,6 +65,7 @@
     getMap: getMap,
     getMainPin: getMainPin,
     getContainerPin: getContainerPin,
+    getDefaultMainPinCoords: getDefaultMainPinCoords,
     getCoordsMainPin: getCoordsMainPin,
     getLockPage: getLockPage
   };

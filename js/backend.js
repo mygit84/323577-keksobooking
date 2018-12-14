@@ -1,0 +1,82 @@
+'use strict';
+
+(function () {
+  var URL = {
+    LOAD: 'https://js.dump.academy/keksobooking/data',
+    SAVE: 'https://js.dump.academy/keksobooking'
+  };
+  var TIMEOUT = 10000;
+  var STATUS = {
+    OK: 200,
+    BAD: 400,
+    NOT_AUTHORIZED: 401,
+    NOT_FOUND: 404,
+    SERVER_ERROR: 500
+  };
+
+  var createRequest = function (onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('load', function () {
+      var error;
+      switch (xhr.status) {
+        case STATUS.OK:
+          onLoad(xhr.response);
+          break;
+
+        case STATUS.BAD:
+          error = 'Неверный запрос';
+          break;
+
+        case STATUS.NOT_AUTHORIZED:
+          error = 'Пользователь не авторизован';
+          break;
+
+        case STATUS.NOT_FOUND:
+          error = 'Ничего не найдено';
+          break;
+
+        case STATUS.SERVER_ERROR:
+          error = 'Ошибка сервера';
+          break;
+
+        default:
+          error = 'Ошибка: ' + xhr.status + ' ' + xhr.statusText;
+      }
+
+      if (error) {
+        onError(error);
+      }
+    });
+
+    xhr.addEventListener('error', function () {
+      onError('Произошла ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Превышено время ожидания ответа');
+    });
+
+    xhr.timeout = TIMEOUT;
+
+    return xhr;
+  };
+
+  var loadData = function (onLoad, onError) {
+    var xhr = createRequest(onLoad, onError);
+    xhr.open('GET', URL.LOAD);
+    xhr.send();
+  };
+
+  var saveData = function (data, onLoad, onError) {
+    var xhr = createRequest(onLoad, onError);
+    xhr.open('POST', URL.SAVE);
+    xhr.send(data);
+  };
+
+  window.backend = {
+    load: loadData,
+    save: saveData
+  };
+})();

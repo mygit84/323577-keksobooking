@@ -10,11 +10,12 @@
   // Функция создания одного DOM-элемента 'Метка на карте', на основе данных из объекта ad
   var getMapPin = function (ad) {
     var pinElement = similarMapPin.cloneNode(true);
+    var pinImage = pinElement.querySelector('img');
 
-    pinElement.style.left = ad.coordinate.coordinateX - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = ad.coordinate.coordinateY - PIN_HEIGHT + 'px';
-    pinElement.querySelector('img').src = ad.author.avatar;
-    pinElement.querySelector('img').alt = AD_TITLE;
+    pinElement.style.left = ad.location.x - PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = ad.location.y - PIN_HEIGHT + 'px';
+    pinImage.src = ad.author.avatar;
+    pinImage.alt = AD_TITLE;
 
     return pinElement;
   };
@@ -43,13 +44,8 @@
       container.appendChild(mapActivePins(ads)) : 0;
   };
 
-  var getPinsArray = function () {
-    return adsObjects;
-  };
-
   window.pins = {
-    getMapPins: drawMapPins,
-    getPinsArray: getPinsArray
+    getMapPin: drawMapPins
   };
 
 })();

@@ -10,10 +10,19 @@
   var MAIN_PIN_HEIGHT = 65;
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var containerFilters = mapFiltersContainer.querySelector('.map__filters');
-  var isPageActive = false;
+  var isPageActive;
   var startCoords = {
     x: 0,
     y: 0
+  };
+
+  var onLoad = function (response) {
+    window.pins.getMapPin(isPageActive, window.map.getContainerPin(), response);
+    onMapPinsClick(response);
+  };
+
+  var getLoadData = function () {
+    return window.backend.load(onLoad, getErrorMessage);
   };
 
   var getDisabledElement = function (element) {
@@ -37,8 +46,32 @@
     return window.map.getCoordsMainPin(isPageActive, MAIN_PIN_HEIGHT);
   };
 
+  var clearMapPins = function () {
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    for (var i = 0; i < mapPins.length; i++) {
+      mapPins[i].remove();
+    }
+  };
+
+  var clearActiveCard = function () {
+    var activeCard = document.querySelector('.map__card');
+
+    if (activeCard) {
+      activeCard.remove();
+    }
+  };
+
+  var setCleanPage = function () {
+    clearMapPins();
+    clearActiveCard();
+    window.map.getDefaultMainPinCoords();
+    setLockPage();
+  };
+
   // Функция обработки события по клику мыши на метку
   var onPinClick = function (elem, index, arr) {
+
     elem.addEventListener('click', function () {
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.getPopupClose();
@@ -47,37 +80,63 @@
 
   // Функция обработки клика мышью по меткам
   var onMapPinsClick = function (arr) {
-    var mapPins = document.querySelectorAll('button:not(.map__pin--main)');
-    for (var i = 0; i < mapPins.length; i++) {
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
+    for (var i = 0; i < mapPins.length; i++) {
       var mapPin = document.querySelector('.map__pin');
       mapPin = mapPins[i];
       onPinClick(mapPin, i, arr);
     }
   };
 
+  var setFormValue = function () {
+    window.form.getTypeHousingChange();
+    window.form.getRoomNumberValue();
+  };
+
+  var getSuccessMessage = function () {
+    return window.modal.successMessage();
+  };
+
+  var getErrorMessage = function (message) {
+    return window.modal.errorMessage(message);
+  };
+
+  var onSubmitFormData = function (event) {
+    window.backend.save(new FormData(window.form.getContainerForm()), function () {
+      window.form.getContainerForm().reset();
+      setCleanPage();
+      getAddressPin();
+      setFormValue();
+      getSuccessMessage();
+    }, getErrorMessage);
+    event.preventDefault();
+  };
+
   var setLockPage = function () {
+    isPageActive = false;
+    window.map.getMap().classList.add('map--faded');
+    window.form.getContainerForm().classList.add('ad-form--disabled');
     getLockFieldset(containerFilters);
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
-    window.form.getTypeHousingChange();
-    window.form.getRoomNumberValue();
+    setFormValue();
   };
 
   var setUnlockPage = function () {
     isPageActive = true;
     window.map.getMap().classList.remove('map--faded');
     window.form.getContainerForm().classList.remove('ad-form--disabled');
-    window.pins.getMapPins(isPageActive, window.map.getContainerPin(), window.data.getObjectsAds());
+    getLoadData();
     getLockFieldset(containerFilters);
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
-    onMapPinsClick(window.pins.getPinsArray());
     window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getRoomNumbers().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getTypeElement().addEventListener('change', window.form.getTypeHousingChange);
     document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinMouseUp);
+    window.form.getFormSubmitHandler(onSubmitFormData);
   };
 
   // Функция нажатия кнопки мыши по главному пину
