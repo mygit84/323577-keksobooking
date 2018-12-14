@@ -18,7 +18,7 @@
 
   var onLoad = function (response) {
     window.pins.getMapPin(isPageActive, window.map.getContainerPin(), response);
-    onMapPinsClick(response);
+    window.pins.onMapPinsClick(response, onPinClick);
   };
 
   var getLoadData = function () {
@@ -46,25 +46,9 @@
     return window.map.getCoordsMainPin(isPageActive, MAIN_PIN_HEIGHT);
   };
 
-  var clearMapPins = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-    for (var i = 0; i < mapPins.length; i++) {
-      mapPins[i].remove();
-    }
-  };
-
-  var clearActiveCard = function () {
-    var activeCard = document.querySelector('.map__card');
-
-    if (activeCard) {
-      activeCard.remove();
-    }
-  };
-
   var setCleanPage = function () {
-    clearMapPins();
-    clearActiveCard();
+    window.pins.clearMapPins();
+    window.card.clearActiveCard();
     window.map.getDefaultMainPinCoords();
     setLockPage();
   };
@@ -76,17 +60,6 @@
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.getPopupClose();
     });
-  };
-
-  // Функция обработки клика мышью по меткам
-  var onMapPinsClick = function (arr) {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-    for (var i = 0; i < mapPins.length; i++) {
-      var mapPin = document.querySelector('.map__pin');
-      mapPin = mapPins[i];
-      onPinClick(mapPin, i, arr);
-    }
   };
 
   var setFormValue = function () {

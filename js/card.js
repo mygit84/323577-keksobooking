@@ -111,9 +111,9 @@
   };
 
   // Функция закрытия попара с помощью Esc
-  var onCardCloseEscPress = function (elem) {
+  var onCardCloseEscPress = function (elem, callback) {
     return function (evt) {
-      if (isEscEvent(evt) && typeof (elem) !== 'undefined' && elem !== null) {
+      if (callback(evt) && typeof (elem) !== 'undefined' && elem !== null) {
         elem.remove();
       }
       document.removeEventListener('keydown', onCardCloseEscPress);
@@ -134,9 +134,18 @@
     onPopupCloseClick(popup, popupClose);
   };
 
+  var clearActiveCard = function () {
+    var activeCard = document.querySelector('.map__card');
+
+    if (activeCard) {
+      activeCard.remove();
+    }
+  };
+
   window.card = {
     getMapCard: getMapCard,
     isEscEvent: isEscEvent,
-    getPopupClose: onPopupClose
+    getPopupClose: onPopupClose,
+    clearActiveCard: clearActiveCard
   };
 })();
