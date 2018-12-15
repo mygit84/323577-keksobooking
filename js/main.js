@@ -8,26 +8,34 @@
   var MAX_COORDINATE_Y = 630;
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
+  var ESC_KEYCODE = 27;
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var containerFilters = mapFiltersContainer.querySelector('.map__filters');
-  var isPageActive;
+  var isPageActive = false;
+  var response = [];
   var startCoords = {
     x: 0,
     y: 0
   };
 
-  var onLoad = function (response) {
-    window.pins.getMapPin(isPageActive, window.map.getContainerPin(), response);
-    window.pins.onMapPinsClick(response, onPinClick);
+  var onLoad = function (ads) {
+    response = ads;
+    var pinRender = window.pins.render(response);
+    return pinRender;
   };
 
-  var getLoadData = function () {
-    return window.backend.load(onLoad, getErrorMessage);
+  var isEscEvent = function (evt) {
+    return evt.keyCode === ESC_KEYCODE;
+  };
+
+  var getCardCloseEscPress = function (evt) {
+    return window.card.onCardCloseEscPress(isEscEvent(evt));
   };
 
   var getDisabledElement = function (element) {
     if (!isPageActive) {
       element.setAttribute('disabled', 'disabled');
+
     }
     if (isPageActive) {
       element.removeAttribute('disabled', 'disabled');
@@ -47,7 +55,7 @@
   };
 
   var setCleanPage = function () {
-    window.pins.clearMapPins();
+    clearMapPins();
     window.card.clearActiveCard();
     window.map.getDefaultMainPinCoords();
     setLockPage();
@@ -55,7 +63,6 @@
 
   // Функция обработки события по клику мыши на метку
   var onPinClick = function (elem, index, arr) {
-
     elem.addEventListener('click', function () {
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.getPopupClose();
@@ -87,7 +94,6 @@
   };
 
   var setLockPage = function () {
-    isPageActive = false;
     window.map.getMap().classList.add('map--faded');
     window.form.getContainerForm().classList.add('ad-form--disabled');
     getLockFieldset(containerFilters);
@@ -100,7 +106,7 @@
     isPageActive = true;
     window.map.getMap().classList.remove('map--faded');
     window.form.getContainerForm().classList.remove('ad-form--disabled');
-    getLoadData();
+    window.pins.getMapPins(isPageActive, window.map.getContainerPin(), onLoad(response));
     getLockFieldset(containerFilters);
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
@@ -175,9 +181,11 @@
   var onMainPinMouseUp = function (upEvt) {
     upEvt.preventDefault();
 
-    setUnlockPage();
+    !isPageActive ? setUnlockPage() : 0;
   };
 
+
+  window.backend.load(onLoad, getErrorMessage);
   window.map.getLockPage(setLockPage());
   window.map.getMainPin().addEventListener('mousedown', onMainPinMouseDown);
 })();

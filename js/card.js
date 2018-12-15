@@ -3,7 +3,6 @@
 (function () {
   var PHOTO_WIDTH = 45;
   var PHOTO_HEIGHT = 40;
-  var ESC_KEYCODE = 27;
   var TYPES = {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
@@ -106,14 +105,11 @@
     return cardElement;
   };
 
-  var isEscEvent = function (evt) {
-    return evt.keyCode === ESC_KEYCODE;
-  };
 
   // Функция закрытия попара с помощью Esc
-  var onCardCloseEscPress = function (elem, callback) {
-    return function (evt) {
-      if (callback(evt) && typeof (elem) !== 'undefined' && elem !== null) {
+  var onCardCloseEscPress = function (callback) {
+    return function (evt, elem) {
+      if (callback && typeof (elem) !== 'undefined' && elem !== null) {
         elem.remove();
       }
       document.removeEventListener('keydown', onCardCloseEscPress);
@@ -144,7 +140,7 @@
 
   window.card = {
     getMapCard: getMapCard,
-    isEscEvent: isEscEvent,
+    onCardCloseEscPress: onCardCloseEscPress,
     getPopupClose: onPopupClose,
     clearActiveCard: clearActiveCard
   };

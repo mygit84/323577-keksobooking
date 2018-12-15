@@ -5,7 +5,7 @@
     var similarModalSuccess = document.querySelector('#success').content.querySelector('.success');
     var modalSuccess = similarModalSuccess.cloneNode(true);
 
-    document.addEventListener('keydown', getModalSuccessEscPress);
+    document.addEventListener('keydown', getModalEscPress);
     document.addEventListener('click', getModalSuccessClick);
     document.querySelector('main').appendChild(modalSuccess);
   };
@@ -17,7 +17,7 @@
 
     modalError.querySelector('.error__message').textContent = message;
 
-    document.addEventListener('keydown', getModalErrorEscPress);
+    document.addEventListener('keydown', getModalEscPress);
     document.addEventListener('click', getModalErrorClick);
     errorBtn.addEventListener('click', getBtnErrorClick);
     document.querySelector('main').appendChild(modalError);
@@ -30,26 +30,20 @@
       modalElement.remove();
       switch (classModal) {
         case 'success':
-          document.removeEventListener('keydown', getModalSuccessEscPress);
+          document.removeEventListener('keydown', getModalEscPress);
           document.removeEventListener('click', getModalSuccessClick);
           break;
 
         case 'error':
-          document.removeEventListener('keydown', getModalErrorEscPress);
+          document.removeEventListener('keydown', getModalEscPress);
           document.removeEventListener('click', getModalErrorClick);
       }
     }
   };
 
-  var getModalSuccessEscPress = function (evt) {
-    if (window.card.isEscEvent(evt)) {
-      closeModal('success');
-    }
-  };
-
-  var getModalErrorEscPress = function (evt) {
-    if (window.card.isEscEvent(evt)) {
-      closeModal('error');
+  var getModalEscPress = function (evt, callback, type) {
+    if (callback(evt)) {
+      closeModal('type');
     }
   };
 
@@ -66,6 +60,7 @@
   };
 
   window.modal = {
+    getModalEscPress: getModalEscPress,
     successMessage: showModalSuccess,
     errorMessage: showModalError
   };

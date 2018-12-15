@@ -1,12 +1,12 @@
 'use strict';
 
 (function () {
-  var URL = {
+  var Url = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     SAVE: 'https://js.dump.academy/keksobooking'
   };
   var TIMEOUT = 10000;
-  var STATUS = {
+  var Status = {
     OK: 200,
     BAD: 400,
     NOT_AUTHORIZED: 401,
@@ -21,23 +21,23 @@
     xhr.addEventListener('load', function () {
       var error;
       switch (xhr.status) {
-        case STATUS.OK:
+        case Status.OK:
           onLoad(xhr.response);
           break;
 
-        case STATUS.BAD:
+        case Status.BAD:
           error = 'Неверный запрос';
           break;
 
-        case STATUS.NOT_AUTHORIZED:
+        case Status.NOT_AUTHORIZED:
           error = 'Пользователь не авторизован';
           break;
 
-        case STATUS.NOT_FOUND:
+        case Status.NOT_FOUND:
           error = 'Ничего не найдено';
           break;
 
-        case STATUS.SERVER_ERROR:
+        case Status.SERVER_ERROR:
           error = 'Ошибка сервера';
           break;
 
@@ -65,13 +65,13 @@
 
   var loadData = function (onLoad, onError) {
     var xhr = createRequest(onLoad, onError);
-    xhr.open('GET', URL.LOAD);
+    xhr.open('GET', Url.LOAD);
     xhr.send();
   };
 
   var saveData = function (data, onLoad, onError) {
     var xhr = createRequest(onLoad, onError);
-    xhr.open('POST', URL.SAVE);
+    xhr.open('POST', Url.SAVE);
     xhr.send(data);
   };
 

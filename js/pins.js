@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  var NUMBER_ADS = 5;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var AD_TITLE = 'заголовок объявления';
@@ -23,43 +23,48 @@
   // Функция создания фрагмента DOM-элементов 'Метка на карте', на основе данных из глобальной переменной
   // ads (массива ассоциативных массивов, хранящих ключ: значение каждого i-го объекта ad)
   var renderMapPins = function (ads) {
+    var takeNumber = ads.length > NUMBER_ADS ? NUMBER_ADS : ads.length;
     var pinsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < ads.length; i++) {
+    for (var i = 0; i < takeNumber; i++) {
       pinsFragment.appendChild(getMapPin(ads[i]));
     }
     return pinsFragment;
   };
 
   // Функция отрисовки фрагмента DOM-элементов 'Метка на карте' в родительском DOM-элементе .map__pins
-  var drawMapPins = function (param, container, ads) {
+  var drawMapPins = function (param, container, callback) {
     return param ?
-      container.appendChild(renderMapPins(ads)) : 0;
+    container.appendChild(callback) : 0;
   };
 
-  // Функция обработки клика мышью по меткам
-  var onMapPinsClick = function (ads, callback) {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+/*  var getArrayPins = function () {
+    var mapPins = document.querySelectorAll('map__pin:not(.map__pin--main)');
+    var arrayMapPins = Array.prototype.slice.call(mapPins);
+    console.log(arrayMapPins.length);
+  };*/
 
-    for (var i = 0; i < mapPins.length; i++) {
-      var mapPin = document.querySelector('.map__pin');
-      mapPin = mapPins[i];
-      callback(mapPin, i, ads);
+  /*var onMapPinsClick = function (pins, arr, callback) {
+    Array.from(pins).forEach(function (item) {
+      callback(item, i, arr);
     }
   };
 
-  var clearMapPins = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-    for (var i = 0; i < mapPins.length; i++) {
-      mapPins[i].remove();
+  var clearMapPins = function (pins) {
+    Array.from(pins).forEach(function (item) {
+      item.remove();
     }
   };
+
+  var myFunc = function () {
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    onMapPinsClick(mapPins);
+  };*/
+
 
   window.pins = {
-    getMapPin: drawMapPins,
-    onMapPinsClick: onMapPinsClick,
-    clearMapPins: clearMapPins
+    render: renderMapPins,
+    getMapPins: drawMapPins
   };
 
 })();
