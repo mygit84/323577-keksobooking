@@ -11,16 +11,21 @@
     WIDTH: 65,
     HEIGHT: 65
   };
+  var MessageType = {
+    success: 'success',
+    error: 'error'
+  };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var containerFilters = mapFiltersContainer.querySelector('.map__filters');
   var isPageActive;
-  //var response = [];
+  var response = [];
   var startCoords = {
     x: 0,
     y: 0
   };
 
-  var onSuccessLoad = function (response) {
+  var onSuccessLoad = function (data) {
+    response = data;
     window.pins.render(response);
     window.pins.getMapPins(isPageActive, window.map.getContainerPin(), response);
     onMapPinsClick(response);
@@ -80,23 +85,53 @@
     window.form.getRoomNumberValue();
   };
 
-  var getEscPressEvent = function (evt) {
-    return window.card.escEvent(evt);
+  var getCloseModalType = function () {
+    if (MessageType.success) {
+      closeModal(MessageType.success);
+    }
+    if (MessageType.error) {
+      closeModal(MessageType.error);
+    }
   };
 
-  var setMessageEventListener = function (type, evt) {
-    window.modal.modalEscPress(type, getEscPressEvent(evt));
-    window.modal.modalClick(type);
+  var onModalEscPress = function (evt, type) {
+    if (window.card.escEvent(evt)) {
+      getCloseModalType(type);
+    }
   };
 
-  var getSuccessMessage = function (success, message, evt) {
-    window.modal.showModal(success, message);
-    setMessageEventListener(success, evt);
+  var getErrorBtnClickHandler = function () {
+    var errorButton = document.querySelector('.error__button');
+
+    if (errorButton) {
+      errorButton.addEventListener('click', getCloseModalType);
+    }
   };
 
-  var getErrorMessage = function (error, message, evt) {
-    window.modal.errorMessage(error, message);
-    setMessageEventListener(error, evt);
+  var closeModal = function (type) {
+    var modalElement = document.querySelector('.' + type);
+
+    if (modalElement) {
+      modalElement.remove();
+      document.removeEventListener('click', getCloseModalType);
+      document.removeEventListener('keydown', onModalEscPress);
+    }
+  };
+
+  var setModalListener = function () {
+    document.addEventListener('click', getCloseModalType);
+    document.addEventListener('keydown', onModalEscPress);
+  };
+
+  var getSuccessMessage = function (message) {
+    window.modal.modalMessage(MessageType.success, message);
+    setModalListener();
+  };
+
+  var getErrorMessage = function (message) {
+    window.modal.modalMessage(MessageType.error, message);
+    setModalListener();
+    getErrorBtnClickHandler();
   };
 
   var onSubmitFormData = function (event) {
@@ -131,12 +166,12 @@
     window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getRoomNumbers().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getTypeElement().addEventListener('change', window.form.getTypeHousingChange);
-    getRemoveListener();
+    setRemoveListener();
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
     window.form.getFormSubmitHandler(onSubmitFormData);
   };
 
-  var getRemoveListener = function () {
+  var setRemoveListener = function () {
     document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinDefaultMouseUp);
   };
@@ -213,7 +248,7 @@
 
   var onMainPinActiveMouseUp = function (upEvt) {
     upEvt.preventDefault();
-    getRemoveListener();
+    setRemoveListener();
   };
 
   window.map.getLockPage(setLockPage());

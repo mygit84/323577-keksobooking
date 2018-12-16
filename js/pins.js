@@ -31,14 +31,14 @@
 
   var drawMapPins = function (param, container, ads) {
     return param ?
-    container.appendChild(renderMapPins(ads)) : 0;
+      container.appendChild(renderMapPins(ads)) : 0;
   };
 
   var clearMapPins = function (pins) {
     pins.forEach(function (element) {
-       element.remove();
-     });
-     pins = [];
+      element.remove();
+    });
+    pins = [];
   };
 
   window.pins = {
