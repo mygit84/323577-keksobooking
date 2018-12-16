@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
   var PHOTO_WIDTH = 45;
   var PHOTO_HEIGHT = 40;
   var TYPES = {
@@ -14,7 +15,6 @@
   var popupPhotos = cardElement.querySelector('.popup__photos');
   var popupFeatures = cardElement.querySelector('.popup__features');
 
-  // Функция создания i-го элемента списка удобств
   var getElementFeature = function (newFeature, index) {
     var newElementFeature = document.createElement('li');
 
@@ -24,7 +24,6 @@
     return newElementFeature;
   };
 
-  // Функция создания i-го элемента списка фотографии
   var getElementPhoto = function (newPhoto, index) {
     var newElementPhoto = document.createElement('img');
 
@@ -41,8 +40,6 @@
     container.innerHTML = '';
   };
 
-  // Функция создания фрагмента DOM-элементов <li> списка удобств, созданный на основе длинны
-  // массива i-ых элементов значения features из ключа-объекта offer объекта ad
   var renderElementFeatures = function (newFeatures) {
     getСleanContainer(popupFeatures);
 
@@ -54,8 +51,6 @@
     return featuresFragment;
   };
 
-  // Функция создания фрагмента DOM-элементов <img>, созданный на основе длинны
-  // массива i-ых элементов значения photos из ключа-объекта offer объекта ad
   var renderElementPhotos = function (newPhotos) {
     getСleanContainer(popupPhotos);
 
@@ -75,12 +70,10 @@
     }
   };
 
-  // Функция переименования типа жилья
   var getTypeHousing = function (type) {
     return TYPES[type];
   };
 
-  // Функция создания DOM-элемента <article>, заполненного на основе данных из объекта ad
   var getMapCard = function (adObject) {
 
     if (!adObject.offer) {
@@ -105,29 +98,29 @@
     return cardElement;
   };
 
+  var isEscEvent = function (evt) {
+    return evt.keyCode === ESC_KEYCODE;
+  };
 
-  // Функция закрытия попара с помощью Esc
-  var onCardCloseEscPress = function (callback) {
-    return function (evt, elem) {
-      if (callback && typeof (elem) !== 'undefined' && elem !== null) {
+  var onCardCloseEscPress = function (elem) {
+    return function (evt) {
+      if (isEscEvent(evt, elem) && typeof (elem) !== 'undefined' && elem !== null) {
         elem.remove();
       }
       document.removeEventListener('keydown', onCardCloseEscPress);
     };
   };
 
-  // Функция закрытия карточки с помощью мышки
-  var onPopupCloseClick = function (elem, elemClose) {
+  var getElementCloseClick = function (elem, elemClose) {
     elemClose.addEventListener('click', function () {
       elem.remove();
     });
   };
 
-  // Функция закрытия карточки
-  var onPopupClose = function () {
+  var onPopupCloseClick = function () {
     var popup = document.querySelector('.popup');
     var popupClose = popup.querySelector('.popup__close');
-    onPopupCloseClick(popup, popupClose);
+    getElementCloseClick(popup, popupClose);
   };
 
   var clearActiveCard = function () {
@@ -140,8 +133,8 @@
 
   window.card = {
     getMapCard: getMapCard,
-    onCardCloseEscPress: onCardCloseEscPress,
-    getPopupClose: onPopupClose,
-    clearActiveCard: clearActiveCard
+    closePopupClick: onPopupCloseClick,
+    clearActiveCard: clearActiveCard,
+    escEvent: isEscEvent
   };
 })();

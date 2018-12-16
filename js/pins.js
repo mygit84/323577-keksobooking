@@ -7,7 +7,6 @@
   var AD_TITLE = 'заголовок объявления';
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  // Функция создания одного DOM-элемента 'Метка на карте', на основе данных из объекта ad
   var getMapPin = function (ad) {
     var pinElement = similarMapPin.cloneNode(true);
     var pinImage = pinElement.querySelector('img');
@@ -20,8 +19,6 @@
     return pinElement;
   };
 
-  // Функция создания фрагмента DOM-элементов 'Метка на карте', на основе данных из глобальной переменной
-  // ads (массива ассоциативных массивов, хранящих ключ: значение каждого i-го объекта ad)
   var renderMapPins = function (ads) {
     var takeNumber = ads.length > NUMBER_ADS ? NUMBER_ADS : ads.length;
     var pinsFragment = document.createDocumentFragment();
@@ -32,39 +29,21 @@
     return pinsFragment;
   };
 
-  // Функция отрисовки фрагмента DOM-элементов 'Метка на карте' в родительском DOM-элементе .map__pins
-  var drawMapPins = function (param, container, callback) {
+  var drawMapPins = function (param, container, ads) {
     return param ?
-    container.appendChild(callback) : 0;
-  };
-
-/*  var getArrayPins = function () {
-    var mapPins = document.querySelectorAll('map__pin:not(.map__pin--main)');
-    var arrayMapPins = Array.prototype.slice.call(mapPins);
-    console.log(arrayMapPins.length);
-  };*/
-
-  /*var onMapPinsClick = function (pins, arr, callback) {
-    Array.from(pins).forEach(function (item) {
-      callback(item, i, arr);
-    }
+    container.appendChild(renderMapPins(ads)) : 0;
   };
 
   var clearMapPins = function (pins) {
-    Array.from(pins).forEach(function (item) {
-      item.remove();
-    }
+    pins.forEach(function (element) {
+       element.remove();
+     });
+     pins = [];
   };
-
-  var myFunc = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    onMapPinsClick(mapPins);
-  };*/
-
 
   window.pins = {
     render: renderMapPins,
-    getMapPins: drawMapPins
+    getMapPins: drawMapPins,
+    clear: clearMapPins
   };
-
 })();

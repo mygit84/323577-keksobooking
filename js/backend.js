@@ -43,6 +43,7 @@
 
         default:
           error = 'Ошибка: ' + xhr.status + ' ' + xhr.statusText;
+          break;
       }
 
       if (error) {
