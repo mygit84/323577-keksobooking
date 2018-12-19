@@ -104,7 +104,7 @@
 
   var onCardCloseEscPress = function (elem) {
     return function (evt) {
-      if (isEscEvent(evt, elem) && typeof (elem) !== 'undefined' && elem !== null) {
+      if (isEscEvent(evt) && typeof (elem) !== 'undefined' && elem !== null) {
         elem.remove();
       }
       document.removeEventListener('keydown', onCardCloseEscPress);

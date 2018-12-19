@@ -7,23 +7,23 @@
 
     modalMessage.querySelector('.' + type + '__message').textContent = message;
 
+    document.addEventListener('click', onModalClick);
     document.querySelector('main').appendChild(modalMessage);
   };
 
-  var setModalMessage = function (type, message) {
-    switch (type) {
-      case 'success':
-        message = 'Ваше объявление успешно размещено!';
-        getModalMessage(type, message);
-        break;
+  var closeModal = function () {
+    var modalElement = document.querySelector('.success') || document.querySelector('.error');
 
-      case 'error':
-        getModalMessage(type, message);
-        break;
-    }
+    modalElement.remove();
+    document.removeEventListener('click', onModalClick);
+  };
+
+  var onModalClick = function () {
+    closeModal();
   };
 
   window.modal = {
-    modalMessage: setModalMessage
+    getModalMessage: getModalMessage,
+    closeModal: closeModal
   };
 })();

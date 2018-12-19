@@ -11,10 +11,6 @@
     WIDTH: 65,
     HEIGHT: 65
   };
-  var MessageType = {
-    success: 'success',
-    error: 'error'
-  };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var containerFilters = mapFiltersContainer.querySelector('.map__filters');
   var isPageActive;
@@ -85,53 +81,23 @@
     window.form.getRoomNumberValue();
   };
 
-  var getCloseModalType = function () {
-    if (MessageType.success) {
-      closeModal(MessageType.success);
-    }
-    if (MessageType.error) {
-      closeModal(MessageType.error);
-    }
-  };
-
-  var onModalEscPress = function (evt, type) {
+  var onModalEscPress = function (evt) {
     if (window.card.escEvent(evt)) {
-      getCloseModalType(type);
+      window.modal.closeModal();
     }
+    document.removeEventListener('keydown', onModalEscPress);
   };
 
-  var getErrorBtnClickHandler = function () {
-    var errorButton = document.querySelector('.error__button');
+  var getSuccessMessage = function () {
+    var successMessage = 'Ваше объявление успешно размещено!';
 
-    if (errorButton) {
-      errorButton.addEventListener('click', getCloseModalType);
-    }
-  };
-
-  var closeModal = function (type) {
-    var modalElement = document.querySelector('.' + type);
-
-    if (modalElement) {
-      modalElement.remove();
-      document.removeEventListener('click', getCloseModalType);
-      document.removeEventListener('keydown', onModalEscPress);
-    }
-  };
-
-  var setModalListener = function () {
-    document.addEventListener('click', getCloseModalType);
+    window.modal.getModalMessage('success', successMessage);
     document.addEventListener('keydown', onModalEscPress);
   };
 
-  var getSuccessMessage = function (message) {
-    window.modal.modalMessage(MessageType.success, message);
-    setModalListener();
-  };
-
   var getErrorMessage = function (message) {
-    window.modal.modalMessage(MessageType.error, message);
-    setModalListener();
-    getErrorBtnClickHandler();
+    window.modal.getModalMessage('error', message);
+    document.addEventListener('keydown', onModalEscPress);
   };
 
   var onSubmitFormData = function (event) {
