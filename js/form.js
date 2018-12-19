@@ -79,12 +79,17 @@
     return capacity;
   };
 
+  var getFormSubmitHandler = function (callback) {
+    containerForm.addEventListener('submit', callback);
+  };
+
   window.form = {
     getContainerForm: getContainerForm,
     getTypeElement: getTypeElement,
     getRoomNumbers: getRoomNumbers,
     getCapacity: getCapacity,
     getTypeHousingChange: onTypeHousingChange,
-    getRoomNumberValue: onRoomNumberValue
+    getRoomNumberValue: onRoomNumberValue,
+    getFormSubmitHandler: getFormSubmitHandler
   };
 })();
