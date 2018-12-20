@@ -12,7 +12,6 @@
     HEIGHT: 65
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
-  var containerFilters = mapFiltersContainer.querySelector('.map__filters');
   var isPageActive;
   var response = [];
   var startCoords = {
@@ -24,6 +23,7 @@
     response = data;
     window.pins.render(response);
     window.pins.getMapPins(isPageActive, window.map.getContainerPin(), response);
+    getLockFieldset(window.filter.getContainerFilters());
     onMapPinsClick(response);
   };
 
@@ -60,9 +60,20 @@
   };
 
   var onPinClick = function (elem, index, arr) {
-    elem.addEventListener('click', function () {
+    elem.addEventListener('click', function (evt) {
+      var pin = document.querySelector('.map__pin--active');
+      var target = evt.currentTarget;
+
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.closePopupClick();
+
+      if (elem = target) {
+        elem.classList.add('map__pin--active');
+      }
+
+      if (elem = pin || !target) {
+        elem.classList.remove('map__pin--active');
+      }
     });
   };
 
@@ -81,23 +92,13 @@
     window.form.getRoomNumberValue();
   };
 
-  var onModalEscPress = function (evt) {
-    if (window.card.escEvent(evt)) {
-      window.modal.closeModal();
-    }
-    document.removeEventListener('keydown', onModalEscPress);
-  };
-
   var getSuccessMessage = function () {
     var successMessage = 'Ваше объявление успешно размещено!';
-
     window.modal.getModalMessage('success', successMessage);
-    document.addEventListener('keydown', onModalEscPress);
   };
 
   var getErrorMessage = function (message) {
     window.modal.getModalMessage('error', message);
-    document.addEventListener('keydown', onModalEscPress);
   };
 
   var onSubmitFormData = function (event) {
@@ -115,18 +116,18 @@
     isPageActive = false;
     window.map.getMap().classList.add('map--faded');
     window.form.getContainerForm().classList.add('ad-form--disabled');
-    getLockFieldset(containerFilters);
+    getLockFieldset(window.filter.getContainerFilters());
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     setFormValue();
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
+    document.activeElement.blur();
   };
 
   var setUnlockPage = function () {
     window.backend.load(onSuccessLoad, getErrorMessage);
     window.map.getMap().classList.remove('map--faded');
     window.form.getContainerForm().classList.remove('ad-form--disabled');
-    getLockFieldset(containerFilters);
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);

@@ -7,6 +7,7 @@
 
     modalMessage.querySelector('.' + type + '__message').textContent = message;
 
+    document.addEventListener('keydown', onModalEscPress);
     document.addEventListener('click', onModalClick);
     document.querySelector('main').appendChild(modalMessage);
   };
@@ -16,14 +17,20 @@
 
     modalElement.remove();
     document.removeEventListener('click', onModalClick);
+    document.removeEventListener('keydown', onModalEscPress);
   };
 
   var onModalClick = function () {
     closeModal();
   };
 
+  var onModalEscPress = function (evt) {
+    if (window.card.escEvent(evt)) {
+      closeModal();
+    }
+  };
+
   window.modal = {
-    getModalMessage: getModalMessage,
-    closeModal: closeModal
+    getModalMessage: getModalMessage
   };
 })();
