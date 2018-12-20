@@ -13,18 +13,21 @@
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var isPageActive;
-  var response = [];
   var startCoords = {
     x: 0,
     y: 0
   };
 
+  var showMapPins = function (data) {
+    window.pins.getPinsArray(data, window.card.clearActiveCard);
+    window.pins.drawMapPins(isPageActive, window.map.getContainerPin());
+    onMapPinsClick(data);
+  };
+
   var onSuccessLoad = function (data) {
-    response = data;
-    window.pins.render(response);
-    window.pins.getMapPins(isPageActive, window.map.getContainerPin(), response);
-    getLockFieldset(window.filter.getContainerFilters());
-    onMapPinsClick(response);
+    window.filters.setFilters(data, window.debounce(showMapPins));
+    var newData = window.filters.statusFilter(data);
+    showMapPins(newData);
   };
 
   var getDisabledElement = function (element) {
@@ -60,30 +63,19 @@
   };
 
   var onPinClick = function (elem, index, arr) {
-    elem.addEventListener('click', function (evt) {
-      var pin = document.querySelector('.map__pin--active');
-      var target = evt.currentTarget;
-
+    elem.addEventListener('click', function () {
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.closePopupClick();
-
-      if (elem = target) {
-        elem.classList.add('map__pin--active');
-      }
-
-      if (elem = pin || !target) {
-        elem.classList.remove('map__pin--active');
-      }
     });
   };
 
   var onMapPinsClick = function (arr) {
-    var activPins = getArrayMapPins();
+    var activePins = getArrayMapPins();
 
-    for (var i = 0; i < activPins.length; i++) {
-      var activPin = document.querySelector('.map__pin');
-      activPin = activPins[i];
-      onPinClick(activPin, i, arr);
+    for (var i = 0; i < activePins.length; i++) {
+      var activePin = document.querySelector('.map__pin');
+      activePin = activePins[i];
+      onPinClick(activePin, i, arr);
     }
   };
 
@@ -116,7 +108,7 @@
     isPageActive = false;
     window.map.getMap().classList.add('map--faded');
     window.form.getContainerForm().classList.add('ad-form--disabled');
-    getLockFieldset(window.filter.getContainerFilters());
+    getLockFieldset(window.filters.containerFilters());
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     setFormValue();
@@ -129,6 +121,7 @@
     window.map.getMap().classList.remove('map--faded');
     window.form.getContainerForm().classList.remove('ad-form--disabled');
     getLockFieldset(window.form.getContainerForm());
+    getLockFieldset(window.filters.containerFilters());
     getAddressPin();
     window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getRoomNumbers().addEventListener('change', window.form.getRoomNumberValue);

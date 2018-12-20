@@ -1,49 +1,59 @@
 'use strict';
 
 (function () {
-  var NUMBER_ADS = 5;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
-  var AD_TITLE = 'заголовок объявления';
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
+  var response = [];
+  var pinElements = null;
 
   var getMapPin = function (ad) {
     var pinElement = similarMapPin.cloneNode(true);
     var pinImage = pinElement.querySelector('img');
+    var coordX = ad.location.x - PIN_WIDTH / 2;
+    var coordY = ad.location.y - PIN_HEIGHT;
 
-    pinElement.style.left = ad.location.x - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = ad.location.y - PIN_HEIGHT + 'px';
+    pinElement.style = 'left: ' + coordX + 'px; top: ' + coordY + 'px';
     pinImage.src = ad.author.avatar;
-    pinImage.alt = AD_TITLE;
+    pinImage.alt = ad.offer.title;
 
     return pinElement;
   };
 
+  var getPinsArray = function (ads, callback) {
+    callback();
+    clearMapPins();
+
+    for (var i = 0; i < ads.length; i++) {
+      response.push(getMapPin(ads[i]));
+    }
+  };
+
   var renderMapPins = function (ads) {
-    var takeNumber = ads.length > NUMBER_ADS ? NUMBER_ADS : ads.length;
     var pinsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < takeNumber; i++) {
-      pinsFragment.appendChild(getMapPin(ads[i]));
+    for (var i = 0; i < ads.length; i++) {
+      pinsFragment.appendChild(ads[i]);
     }
     return pinsFragment;
   };
 
-  var drawMapPins = function (param, container, ads) {
+  var drawMapPins = function (param, container) {
+    pinElements = renderMapPins(response);
     return param ?
-      container.appendChild(renderMapPins(ads)) : 0;
+      container.appendChild(pinElements) : 0;
   };
 
-  var clearMapPins = function (pins) {
-    pins.forEach(function (element) {
+  var clearMapPins = function () {
+    response.forEach(function (element) {
       element.remove();
     });
-    pins = [];
+    response = [];
   };
 
   window.pins = {
-    render: renderMapPins,
-    getMapPins: drawMapPins,
+    getPinsArray: getPinsArray,
+    drawMapPins: drawMapPins,
     clear: clearMapPins
   };
 })();
