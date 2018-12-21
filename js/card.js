@@ -2,8 +2,10 @@
 
 (function () {
   var ESC_KEYCODE = 27;
-  var PHOTO_WIDTH = 45;
-  var PHOTO_HEIGHT = 40;
+  var PHOTO = {
+    WIDTH: 45,
+    HEIGHT: 40
+  };
   var TYPES = {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
@@ -29,8 +31,8 @@
 
     newElementPhoto.src = newPhoto.offer.photos[index];
     newElementPhoto.classList.add('popup__photo');
-    newElementPhoto.width = PHOTO_WIDTH;
-    newElementPhoto.height = PHOTO_HEIGHT;
+    newElementPhoto.width = PHOTO.WIDTH;
+    newElementPhoto.height = PHOTO.HEIGHT;
     newElementPhoto.alt = 'Фотография жилья';
 
     return newElementPhoto;
@@ -40,29 +42,25 @@
     container.innerHTML = '';
   };
 
-  var renderElementFeatures = function (newFeatures) {
-    getСleanContainer(popupFeatures);
+  var renderElementsFragment = function (newElements, container, objectsArr, callback) {
+    getСleanContainer(container);
+    var elementsFragment = document.createDocumentFragment();
 
-    var featuresFragment = document.createDocumentFragment();
-
-    for (var i = 0; i < newFeatures.offer.features.length; i++) {
-      featuresFragment.appendChild(getElementFeature(newFeatures, i));
-    }
-    return featuresFragment;
+    objectsArr.forEach(function (elem, i) {
+      elementsFragment.appendChild(callback(newElements, i));
+    });
+    return elementsFragment;
   };
 
-  var renderElementPhotos = function (newPhotos) {
-    getСleanContainer(popupPhotos);
-
-    var photosFragment = document.createDocumentFragment();
-
-    for (var i = 0; i < newPhotos.offer.photos.length; i++) {
-      photosFragment.appendChild(getElementPhoto(newPhotos, i));
-    }
-    return photosFragment;
+  var getFeaturesFragment = function (newFeatures) {
+    return renderElementsFragment(newFeatures, popupFeatures, newFeatures.offer.features, getElementFeature);
   };
 
-  var drawElementCard = function (param, container, callback, ad) {
+  var getPhotosFragment = function (newPhotos) {
+    return renderElementsFragment(newPhotos, popupPhotos, newPhotos.offer.photos, getElementPhoto);
+  };
+
+  var drawCardFragment = function (param, container, callback, ad) {
     if (param) {
       container.appendChild(callback(ad));
     } else {
@@ -90,8 +88,8 @@
     + adObject.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + adObject.offer.checkin
     + ', выезд до ' + adObject.offer.checkout;
-    drawElementCard(adObject.offer.features, popupFeatures, renderElementFeatures, adObject);
-    drawElementCard(adObject.offer.photos, popupPhotos, renderElementPhotos, adObject);
+    drawCardFragment(adObject.offer.features, popupFeatures, getFeaturesFragment, adObject);
+    drawCardFragment(adObject.offer.photos, popupPhotos, getPhotosFragment, adObject);
 
     document.addEventListener('keydown', onCardCloseEscPress(cardElement));
 

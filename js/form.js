@@ -28,11 +28,11 @@
     var target = evt.target;
     var selects = fieldsetTime.querySelectorAll('select');
 
-    for (var i = 0; i < selects.length; i++) {
+    Array.from(selects).forEach(function (elem, i) {
       if (timeSelects.indexOf(selects[i].id) !== -1) {
         selects[i].value = target.value;
       }
-    }
+    });
   });
 
   // Функция валидации полей типа жилья и цены

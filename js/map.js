@@ -4,7 +4,6 @@
   var map = document.querySelector('.map');
   var containerPin = map.querySelector('.map__pins');
   var mapPinMain = containerPin.querySelector('.map__pin--main');
-
   var inputAddress = document.querySelector('#address');
   var mainPinDefaultCootds = {
     left: mapPinMain.style.left,

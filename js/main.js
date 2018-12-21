@@ -40,48 +40,41 @@
   };
 
   var getLockFieldset = function (container) {
-    for (var i = 0; i < container.children.length; i++) {
-      var fieldsetElement = container.children[i];
-      getDisabledElement(fieldsetElement);
-    }
+    Array.from(container.children).forEach(function (elem) {
+      getDisabledElement(elem);
+    });
   };
 
   var getAddressPin = function () {
     return window.map.getCoordsMainPin(isPageActive, MainPinSize.HEIGHT);
   };
 
-  var getArrayMapPins = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    return mapPins;
-  };
-
-  var setCleanPage = function () {
-    window.pins.clear(getArrayMapPins());
-    window.card.clearActiveCard();
-    window.map.getDefaultMainPinCoords();
-    setLockPage();
-  };
-
   var onPinClick = function (elem, index, arr) {
-    elem.addEventListener('click', function () {
+    elem.addEventListener('click', function (evt) {
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.closePopupClick();
+      window.pins.getActiveClassPin(evt);
     });
   };
 
   var onMapPinsClick = function (arr) {
-    var activePins = getArrayMapPins();
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-    for (var i = 0; i < activePins.length; i++) {
-      var activePin = document.querySelector('.map__pin');
-      activePin = activePins[i];
-      onPinClick(activePin, i, arr);
-    }
+    Array.from(mapPins).forEach(function (elem, i) {
+      onPinClick(elem, i, arr);
+    });
   };
 
   var setFormValue = function () {
     window.form.getTypeHousingChange();
     window.form.getRoomNumberValue();
+  };
+
+  var setCleanPage = function () {
+    window.pins.clear();
+    window.card.clearActiveCard();
+    window.map.getDefaultMainPinCoords();
+    setLockPage();
   };
 
   var getSuccessMessage = function () {

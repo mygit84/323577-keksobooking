@@ -20,21 +20,25 @@
     return pinElement;
   };
 
-  var getPinsArray = function (ads, callback) {
+  var setClearMap = function (callback) {
     callback();
     clearMapPins();
+  };
 
-    for (var i = 0; i < ads.length; i++) {
-      response.push(getMapPin(ads[i]));
-    }
+  var getPinsArray = function (ads, callback) {
+    setClearMap(callback);
+
+    ads.forEach(function (elem) {
+      response.push(getMapPin(elem));
+    });
   };
 
   var renderMapPins = function (ads) {
     var pinsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < ads.length; i++) {
-      pinsFragment.appendChild(ads[i]);
-    }
+    ads.forEach(function (elem) {
+      pinsFragment.appendChild(elem);
+    });
     return pinsFragment;
   };
 
@@ -51,9 +55,21 @@
     response = [];
   };
 
+  var getActiveClassPin = function (evt) {
+    var target = evt.currentTarget;
+    var pinActive = document.querySelector('.map__pin--active');
+
+    if (!target || pinActive) {
+      pinActive.classList.remove('map__pin--active');
+      target.classList.add('map__pin--active');
+    }
+    target.classList.add('map__pin--active');
+  };
+
   window.pins = {
     getPinsArray: getPinsArray,
     drawMapPins: drawMapPins,
-    clear: clearMapPins
+    clear: clearMapPins,
+    getActiveClassPin: getActiveClassPin
   };
 })();
