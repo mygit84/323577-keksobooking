@@ -3,7 +3,7 @@
 (function () {
   var Pin = {
     WIDTH: 50,
-    HEIGHT:70
+    HEIGHT: 70
   };
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
   var response = [];

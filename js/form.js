@@ -71,9 +71,9 @@
           message = 'Все комнаты не для гостей';
         }
         break;
-      }
-      capacity.setCustomValidity(message);
-    };
+    }
+    capacity.setCustomValidity(message);
+  };
 
   var getContainerForm = function () {
     return containerForm;
