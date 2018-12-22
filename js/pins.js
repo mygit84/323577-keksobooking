@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+  var Pin = {
+    WIDTH: 50,
+    HEIGHT:70
+  };
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
   var response = [];
   var pinElements = null;
@@ -10,8 +12,8 @@
   var getMapPin = function (ad) {
     var pinElement = similarMapPin.cloneNode(true);
     var pinImage = pinElement.querySelector('img');
-    var coordX = ad.location.x - PIN_WIDTH / 2;
-    var coordY = ad.location.y - PIN_HEIGHT;
+    var coordX = ad.location.x - Pin.WIDTH / 2;
+    var coordY = ad.location.y - Pin.HEIGHT;
 
     pinElement.style = 'left: ' + coordX + 'px; top: ' + coordY + 'px';
     pinImage.src = ad.author.avatar;
@@ -20,13 +22,8 @@
     return pinElement;
   };
 
-  var setClearMap = function (callback) {
-    callback();
-    clearMapPins();
-  };
-
   var getPinsArray = function (ads, callback) {
-    setClearMap(callback);
+    callback();
 
     ads.forEach(function (elem) {
       response.push(getMapPin(elem));

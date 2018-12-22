@@ -2,6 +2,10 @@
 
 (function () {
   var NUMBER_PINS = 5;
+  var PriseValue = {
+    low: 10000,
+    high: 50000
+  };
   var containerFilters = document.querySelector('.map__filters');
   var type = containerFilters.querySelector('#housing-type');
   var price = containerFilters.querySelector('#housing-price');
@@ -9,10 +13,6 @@
   var guests = containerFilters.querySelector('#housing-guests');
   var featuresList = containerFilters.querySelector('.map__features');
   var features = featuresList.querySelectorAll('.map__checkbox');
-  var PriseValue = {
-    low: 10000,
-    high: 50000
-  };
 
   var checkHousingType = function (elem) {
     return type.value === 'any' ? true : elem.offer.type === type.value;

@@ -2,15 +2,15 @@
 
 (function () {
   var ESC_KEYCODE = 27;
-  var PHOTO = {
+  var TYPES = {
+    flat: 'Квартира',
+    bungalo: 'Бунгало',
+    house: 'Дом',
+    palace: 'Дворец'
+  };
+  var Photo = {
     WIDTH: 45,
     HEIGHT: 40
-  };
-  var TYPES = {
-    'flat': 'Квартира',
-    'bungalo': 'Бунгало',
-    'house': 'Дом',
-    'palace': 'Дворец'
   };
   var similarMapCard = document.querySelector('#card').content.querySelector('.map__card');
   var cardElement = similarMapCard.cloneNode(true);
@@ -31,8 +31,8 @@
 
     newElementPhoto.src = newPhoto.offer.photos[index];
     newElementPhoto.classList.add('popup__photo');
-    newElementPhoto.width = PHOTO.WIDTH;
-    newElementPhoto.height = PHOTO.HEIGHT;
+    newElementPhoto.width = Photo.WIDTH;
+    newElementPhoto.height = Photo.HEIGHT;
     newElementPhoto.alt = 'Фотография жилья';
 
     return newElementPhoto;
