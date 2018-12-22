@@ -12,19 +12,24 @@
     HEIGHT: 65
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
-  var containerFilters = mapFiltersContainer.querySelector('.map__filters');
   var isPageActive;
-  var response = [];
   var startCoords = {
     x: 0,
     y: 0
   };
 
+  var showMapPins = function (data) {
+    window.pins.getPinsArray(data, setClearMap);
+    window.pins.drawMapPins(isPageActive, window.map.getContainerPin());
+    onMapPinsClick(data);
+  };
+
   var onSuccessLoad = function (data) {
-    response = data;
-    window.pins.render(response);
-    window.pins.getMapPins(isPageActive, window.map.getContainerPin(), response);
-    onMapPinsClick(response);
+    window.filters.setFilters(data, window.debounce(showMapPins));
+    var newData = window.filters.statusFilter(data);
+    showMapPins(newData);
+    getLockFieldset(window.filters.containerFilters());
+    document.removeEventListener('mouseup', onMainPinDefaultMouseUp);
   };
 
   var getDisabledElement = function (element) {
@@ -37,43 +42,29 @@
   };
 
   var getLockFieldset = function (container) {
-    for (var i = 0; i < container.children.length; i++) {
-      var fieldsetElement = container.children[i];
-      getDisabledElement(fieldsetElement);
-    }
+    Array.from(container.children).forEach(function (elem) {
+      getDisabledElement(elem);
+    });
   };
 
   var getAddressPin = function () {
     return window.map.getCoordsMainPin(isPageActive, MainPinSize.HEIGHT);
   };
 
-  var getArrayMapPins = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    return mapPins;
-  };
-
-  var setCleanPage = function () {
-    window.pins.clear(getArrayMapPins());
-    window.card.clearActiveCard();
-    window.map.getDefaultMainPinCoords();
-    setLockPage();
-  };
-
   var onPinClick = function (elem, index, arr) {
-    elem.addEventListener('click', function () {
+    elem.addEventListener('click', function (evt) {
       window.map.getMap().insertBefore(window.card.getMapCard(arr[index]), mapFiltersContainer);
       window.card.closePopupClick();
+      window.pins.getActiveClassPin(evt);
     });
   };
 
   var onMapPinsClick = function (arr) {
-    var activPins = getArrayMapPins();
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-    for (var i = 0; i < activPins.length; i++) {
-      var activPin = document.querySelector('.map__pin');
-      activPin = activPins[i];
-      onPinClick(activPin, i, arr);
-    }
+    Array.from(mapPins).forEach(function (elem, i) {
+      onPinClick(elem, i, arr);
+    });
   };
 
   var setFormValue = function () {
@@ -81,26 +72,27 @@
     window.form.getRoomNumberValue();
   };
 
-  var onModalEscPress = function (evt) {
-    if (window.card.escEvent(evt)) {
-      window.modal.closeModal();
-    }
-    document.removeEventListener('keydown', onModalEscPress);
+  var setClearMap = function () {
+    window.pins.clear();
+    window.card.clearActiveCard();
+  };
+
+  var setCleanPage = function () {
+    setClearMap();
+    window.map.getDefaultMainPinCoords();
+    setLockPage();
   };
 
   var getSuccessMessage = function () {
     var successMessage = 'Ваше объявление успешно размещено!';
-
     window.modal.getModalMessage('success', successMessage);
-    document.addEventListener('keydown', onModalEscPress);
   };
 
   var getErrorMessage = function (message) {
     window.modal.getModalMessage('error', message);
-    document.addEventListener('keydown', onModalEscPress);
   };
 
-  var onSubmitFormData = function (event) {
+  var onSubmitFormData = function (evt) {
     window.backend.save(new FormData(window.form.getContainerForm()), function () {
       window.form.getContainerForm().reset();
       setCleanPage();
@@ -108,38 +100,34 @@
       setFormValue();
       getSuccessMessage();
     }, getErrorMessage);
-    event.preventDefault();
+    evt.preventDefault();
   };
 
   var setLockPage = function () {
     isPageActive = false;
     window.map.getMap().classList.add('map--faded');
     window.form.getContainerForm().classList.add('ad-form--disabled');
-    getLockFieldset(containerFilters);
+    getLockFieldset(window.filters.containerFilters());
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     setFormValue();
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
+    document.activeElement.blur();
   };
 
   var setUnlockPage = function () {
     window.backend.load(onSuccessLoad, getErrorMessage);
     window.map.getMap().classList.remove('map--faded');
     window.form.getContainerForm().classList.remove('ad-form--disabled');
-    getLockFieldset(containerFilters);
     getLockFieldset(window.form.getContainerForm());
     getAddressPin();
     window.form.getCapacity().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getRoomNumbers().addEventListener('change', window.form.getRoomNumberValue);
     window.form.getTypeElement().addEventListener('change', window.form.getTypeHousingChange);
-    setRemoveListener();
+    document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
     window.form.getFormSubmitHandler(onSubmitFormData);
-  };
-
-  var setRemoveListener = function () {
-    document.removeEventListener('mousemove', onMainPinMouseMove);
-    document.removeEventListener('mouseup', onMainPinDefaultMouseUp);
+    window.form.getResetBtnHandler(setCleanPage);
   };
 
   var onMainPinMouseDown = function (downEvt) {
@@ -214,7 +202,8 @@
 
   var onMainPinActiveMouseUp = function (upEvt) {
     upEvt.preventDefault();
-    setRemoveListener();
+    document.removeEventListener('mousemove', onMainPinMouseMove);
+    document.removeEventListener('mouseup', onMainPinDefaultMouseUp);
   };
 
   window.map.getLockPage(setLockPage());
