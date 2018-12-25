@@ -100,7 +100,7 @@
 
   var getChangeHandler = function (fileCooser, callback) {
     fileCooser.addEventListener('change', function () {
-      previewFile(fileCooserAvatar, callback);
+      previewFile(fileCooser, callback);
     });
   };
 
