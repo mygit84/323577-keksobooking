@@ -20,10 +20,10 @@
     return Math.round(((x.left + x.right) / 2) + pageXOffset);
   };
 
-  var getCoordY = function (param, pinHeight) {
+  var getCoordY = function (parametr, pinHeight) {
     var y = mapPinMain.getBoundingClientRect();
 
-    return param ?
+    return parametr ?
       Math.round((((y.top + y.bottom) / 2) + pinHeight / 2) + pageYOffset) :
       Math.round(((y.top + y.bottom) / 2) + pageYOffset);
   };
@@ -33,8 +33,8 @@
     return Math.round(mapX.left + pageXOffset);
   };
 
-  var getCoordsMainPin = function (param, pinHeight) {
-    var pinAddress = getCoordX() - getCoordsMapX() + ', ' + getCoordY(param, pinHeight);
+  var getCoordsMainPin = function (parametr, pinHeight) {
+    var pinAddress = getCoordX() - getCoordsMapX() + ', ' + getCoordY(parametr, pinHeight);
     inputAddress.value = pinAddress;
   };
 

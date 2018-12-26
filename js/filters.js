@@ -1,10 +1,11 @@
 'use strict';
 
 (function () {
+  var VALUE_ANY = 'any';
   var NUMBER_PINS = 5;
   var PriseValue = {
-    low: 10000,
-    high: 50000
+    LOW: 10000,
+    HIGH: 50000
   };
   var containerFilters = document.querySelector('.map__filters');
   var type = containerFilters.querySelector('#housing-type');
@@ -14,38 +15,38 @@
   var featuresList = containerFilters.querySelector('.map__features');
   var features = featuresList.querySelectorAll('.map__checkbox');
 
-  var checkHousingType = function (elem) {
-    return type.value === 'any' ? true : elem.offer.type === type.value;
+  var checkHousingType = function (element) {
+    return type.value === VALUE_ANY ? true : element.offer.type === type.value;
   };
 
-  var checkHousingPrice = function (elem) {
+  var checkHousingPrice = function (element) {
     var isPriceConforming;
     switch (price.value) {
-      case 'any':
+      case VALUE_ANY:
         isPriceConforming = true;
         break;
 
       case 'low':
-        isPriceConforming = elem.offer.price < PriseValue.low;
+        isPriceConforming = element.offer.price < PriseValue.LOW;
         break;
 
       case 'middle':
-        isPriceConforming = elem.offer.price >= PriseValue.low && elem.offer.price <= PriseValue.high;
+        isPriceConforming = element.offer.price >= PriseValue.LOW && element.offer.price <= PriseValue.HIGH;
         break;
 
       case 'high':
-        isPriceConforming = elem.offer.price > PriseValue.high;
+        isPriceConforming = element.offer.price > PriseValue.HIGH;
         break;
     }
     return isPriceConforming;
   };
 
-  var checkHousingRooms = function (elem) {
-    return rooms.value === 'any' ? true : parseInt(elem.offer.rooms, 10) === parseInt(rooms.value, 10);
+  var checkHousingRooms = function (element) {
+    return rooms.value === VALUE_ANY ? true : parseInt(element.offer.rooms, 10) === parseInt(rooms.value, 10);
   };
 
-  var checkHousingGuests = function (elem) {
-    return guests.value === 'any' ? true : parseInt(elem.offer.guests, 10) === parseInt(guests.value, 10);
+  var checkHousingGuests = function (element) {
+    return guests.value === VALUE_ANY ? true : parseInt(element.offer.guests, 10) === parseInt(guests.value, 10);
   };
 
   var getCheckedFeatures = function () {
@@ -66,8 +67,8 @@
     return selectedValues.length === selectedArr.length;
   };
 
-  var checkHousingFeatures = function (elem) {
-    return getCheckedFeatures().length === 0 ? true : getNestedArray(getCheckedFeatures(), elem.offer.features);
+  var checkHousingFeatures = function (element) {
+    return getCheckedFeatures().length === 0 ? true : getNestedArray(getCheckedFeatures(), element.offer.features);
   };
 
   var getStatusFilter = function (dataAll) {

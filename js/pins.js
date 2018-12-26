@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var PIN_ACTIVE_CLASS = 'map__pin--active';
   var Pin = {
     WIDTH: 50,
     HEIGHT: 70
@@ -25,23 +26,23 @@
   var getPinsArray = function (ads, callback) {
     callback();
 
-    ads.forEach(function (elem) {
-      response.push(getMapPin(elem));
+    ads.forEach(function (element) {
+      response.push(getMapPin(element));
     });
   };
 
   var renderMapPins = function (ads) {
     var pinsFragment = document.createDocumentFragment();
 
-    ads.forEach(function (elem) {
-      pinsFragment.appendChild(elem);
+    ads.forEach(function (element) {
+      pinsFragment.appendChild(element);
     });
     return pinsFragment;
   };
 
-  var drawMapPins = function (param, container) {
+  var drawMapPins = function (parametr, container) {
     pinElements = renderMapPins(response);
-    return param ?
+    return parametr ?
       container.appendChild(pinElements) : 0;
   };
 
@@ -54,13 +55,13 @@
 
   var getActiveClassPin = function (evt) {
     var target = evt.currentTarget;
-    var pinActive = document.querySelector('.map__pin--active');
+    var pinActive = document.querySelector('.' + PIN_ACTIVE_CLASS);
 
     if (!target || pinActive) {
-      pinActive.classList.remove('map__pin--active');
-      target.classList.add('map__pin--active');
+      pinActive.classList.remove(PIN_ACTIVE_CLASS);
+      target.classList.add(PIN_ACTIVE_CLASS);
     }
-    target.classList.add('map__pin--active');
+    target.classList.add(PIN_ACTIVE_CLASS);
   };
 
   window.pins = {
