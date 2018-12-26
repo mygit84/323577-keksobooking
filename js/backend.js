@@ -1,11 +1,11 @@
 'use strict';
 
 (function () {
+  var TIMEOUT = 10000;
   var Url = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     SAVE: 'https://js.dump.academy/keksobooking'
   };
-  var TIMEOUT = 10000;
   var Status = {
     OK: 200,
     BAD: 400,

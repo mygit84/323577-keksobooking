@@ -78,7 +78,7 @@
     window.card.clearActiveCard();
   };
 
-  var setCleanPage = function () {
+  var setClearPage = function () {
     setClearMap();
     window.preview.removePhoto();
     window.map.getDefaultMainPinCoords();
@@ -97,7 +97,7 @@
   var onSubmitFormData = function (evt) {
     window.backend.save(new FormData(window.form.getContainerForm()), function () {
       window.form.getContainerForm().reset();
-      setCleanPage();
+      setClearPage();
       getAddressPin();
       setFormValue();
       getSuccessMessage();
@@ -139,7 +139,7 @@
     document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
     window.form.getFormSubmitHandler(onSubmitFormData);
-    window.form.getResetBtnHandler(setCleanPage);
+    window.form.getResetBtnHandler(setClearPage);
   };
 
   var onMainPinMouseDown = function (downEvt) {

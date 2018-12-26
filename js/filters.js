@@ -3,9 +3,11 @@
 (function () {
   var VALUE_ANY = 'any';
   var NUMBER_PINS = 5;
+
   var PriseValue = {
     LOW: 10000,
     HIGH: 50000
+
   };
   var containerFilters = document.querySelector('.map__filters');
   var type = containerFilters.querySelector('#housing-type');
@@ -36,6 +38,7 @@
 
       case 'high':
         isPriceConforming = element.offer.price > PriseValue.HIGH;
+
         break;
     }
     return isPriceConforming;
