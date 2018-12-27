@@ -2,11 +2,24 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var fileCooserAvatar = document.querySelector('.ad-form-header__input');
+  var EventName = {
+    DRAG: {
+      ENTER: 'dragenter',
+      OVER: 'dragover',
+      LEAVE: 'dragleave'
+    },
+    DROP: {
+      DROP: 'drop'
+    },
+    CHANGE: {
+      CHANGE: 'change'
+    }
+  };
+  var fileChooserAvatar = document.querySelector('.ad-form-header__input');
   var previewAvatar = document.querySelector('.ad-form-header__preview img');
   var dropZoneAvatar = document.querySelector('.ad-form-header__drop-zone');
   var photoContainer = document.querySelector('.ad-form__photo-container');
-  var fileCooserPhoto = photoContainer.querySelector('.ad-form__input');
+  var fileChooserPhoto = photoContainer.querySelector('.ad-form__input');
   var previewPhoto = photoContainer.querySelector('.ad-form__photo');
   var dropZonePhoto = photoContainer.querySelector('.ad-form__drop-zone');
   var defaultAvatar = previewAvatar.src;
@@ -16,8 +29,8 @@
     var file = addedFile.files[0];
     var fileName = file.name.toLowerCase();
 
-    var matches = FILE_TYPES.some(function (elem) {
-      return fileName.endsWith(elem);
+    var matches = FILE_TYPES.some(function (element) {
+      return fileName.endsWith(element);
     });
 
     if (matches) {
@@ -61,8 +74,8 @@
 
   var getRemoveElementPhoto = function () {
     if (photos) {
-      photos.forEach(function (elem) {
-        elem.remove();
+      photos.forEach(function (element) {
+        element.remove();
       });
     }
     photos = [];
@@ -78,12 +91,12 @@
     evt.stopPropagation();
   };
 
-  var getElementHighlight = function (elem) {
-    elem.classList.add('highlight');
+  var getElementHighlight = function (element) {
+    element.classList.add('highlight');
   };
 
-  var getElementUnhighlight = function (elem) {
-    elem.classList.remove('highlight');
+  var getElementUnhighlight = function (element) {
+    element.classList.remove('highlight');
   };
 
   var getDropZoneHandler = function (dropZone, eventName, callback) {
@@ -93,14 +106,14 @@
   };
 
   var getDropHandler = function (dropZone, callback) {
-    dropZone.addEventListener('drop', function (evt) {
+    dropZone.addEventListener(EventName.DROP.DROP, function (evt) {
       previewFile(evt.dataTransfer, callback);
     });
   };
 
-  var getChangeHandler = function (fileCooser, callback) {
-    fileCooser.addEventListener('change', function () {
-      previewFile(fileCooser, callback);
+  var getChangeHandler = function (fileChooser, callback) {
+    fileChooser.addEventListener(EventName.CHANGE.CHANGE, function () {
+      previewFile(fileChooser, callback);
     });
   };
 
@@ -110,21 +123,21 @@
   };
 
   var setChangeHandlers = function () {
-    getChangeHandler(fileCooserAvatar, setAvatarLink);
-    getChangeHandler(fileCooserPhoto, getNewElementPhoto);
+    getChangeHandler(fileChooserAvatar, setAvatarLink);
+    getChangeHandler(fileChooserPhoto, getNewElementPhoto);
   };
 
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
+  [EventName.DRAG.ENTER, EventName.DRAG.OVER, EventName.DRAG.LEAVE, EventName.DROP.DROP].forEach(function (eventName) {
     dropZoneAvatar.addEventListener(eventName, preventDefaults, false);
     dropZonePhoto.addEventListener(eventName, preventDefaults, false);
   });
 
-  ['dragenter', 'dragover'].forEach(function (eventName) {
+  [EventName.DRAG.ENTER, EventName.DRAG.OVER].forEach(function (eventName) {
     getDropZoneHandler(dropZoneAvatar, eventName, getElementHighlight);
     getDropZoneHandler(dropZonePhoto, eventName, getElementHighlight);
   });
 
-  ['dragleave', 'drop'].forEach(function (eventName) {
+  [EventName.DRAG.LEAVE, EventName.DROP.DROP].forEach(function (eventName) {
     getDropZoneHandler(dropZoneAvatar, eventName, getElementUnhighlight);
     getDropZoneHandler(dropZonePhoto, eventName, getElementUnhighlight);
   });

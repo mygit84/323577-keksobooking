@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var containerMessage = document.querySelector('main');
+  var modalElement;
+
   var getModalMessage = function (type, message) {
     var similarModalMessage = document.querySelector('#' + type).content.querySelector('.' + type);
     var modalMessage = similarModalMessage.cloneNode(true);
@@ -9,13 +12,18 @@
 
     document.addEventListener('keydown', onModalEscPress);
     document.addEventListener('click', onModalClick);
-    document.querySelector('main').appendChild(modalMessage);
+    containerMessage.appendChild(modalMessage);
+  };
+
+  var getDomElementMessage = function () {
+    modalElement = document.querySelector('.success') || document.querySelector('.error');
+    return modalElement;
   };
 
   var closeModal = function () {
-    var modalElement = document.querySelector('.success') || document.querySelector('.error');
+    var element = getDomElementMessage();
 
-    modalElement.remove();
+    element.remove();
     document.removeEventListener('click', onModalClick);
     document.removeEventListener('keydown', onModalEscPress);
   };

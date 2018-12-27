@@ -16,6 +16,7 @@
   var cardElement = similarMapCard.cloneNode(true);
   var popupPhotos = cardElement.querySelector('.popup__photos');
   var popupFeatures = cardElement.querySelector('.popup__features');
+  var activeCardElement;
 
   var getElementFeature = function (newFeature, index) {
     var newElementFeature = document.createElement('li');
@@ -46,7 +47,7 @@
     getСleanContainer(container);
     var elementsFragment = document.createDocumentFragment();
 
-    objectsArr.forEach(function (elem, i) {
+    objectsArr.forEach(function (element, i) {
       elementsFragment.appendChild(callback(newElements, i));
     });
     return elementsFragment;
@@ -60,8 +61,8 @@
     return renderElementsFragment(newPhotos, popupPhotos, newPhotos.offer.photos, getElementPhoto);
   };
 
-  var drawCardFragment = function (param, container, callback, ad) {
-    if (param) {
+  var drawCardFragment = function (parametr, container, callback, ad) {
+    if (parametr) {
       container.appendChild(callback(ad));
     } else {
       container.remove();
@@ -100,18 +101,22 @@
     return evt.keyCode === ESC_KEYCODE;
   };
 
-  var onCardCloseEscPress = function (elem) {
+  var getRemoveElement = function (element) {
+    element.remove();
+  };
+
+  var onCardCloseEscPress = function (element) {
     return function (evt) {
-      if (isEscEvent(evt) && typeof (elem) !== 'undefined' && elem !== null) {
-        elem.remove();
+      if (isEscEvent(evt) && typeof (element) !== 'undefined' && element !== null) {
+        getRemoveElement(element);
       }
       document.removeEventListener('keydown', onCardCloseEscPress);
     };
   };
 
-  var getElementCloseClick = function (elem, elemClose) {
-    elemClose.addEventListener('click', function () {
-      elem.remove();
+  var getElementCloseClick = function (element, elementClose) {
+    elementClose.addEventListener('click', function () {
+      getRemoveElement(element);
     });
   };
 
@@ -121,11 +126,16 @@
     getElementCloseClick(popup, popupClose);
   };
 
+  var getDomElementCard = function () {
+    activeCardElement = document.querySelector('.map__card');
+    return activeCardElement;
+  };
+
   var clearActiveCard = function () {
-    var activeCard = document.querySelector('.map__card');
+    var activeCard = getDomElementCard();
 
     if (activeCard) {
-      activeCard.remove();
+      getRemoveElement(activeCard);
     }
   };
 

@@ -28,7 +28,7 @@
     var target = evt.target;
     var selects = fieldsetTime.querySelectorAll('select');
 
-    Array.from(selects).forEach(function (elem, i) {
+    Array.from(selects).forEach(function (element, i) {
       if (timeSelects.indexOf(selects[i].id) !== -1) {
         selects[i].value = target.value;
       }
