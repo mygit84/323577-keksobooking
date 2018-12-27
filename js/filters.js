@@ -3,9 +3,15 @@
 (function () {
   var VALUE_ANY = 'any';
   var NUMBER_PINS = 5;
+<<<<<<< HEAD
   var PriсeValue = {
+=======
+
+  var PriseValue = {
+>>>>>>> 9a3e602690621433a4e2db11cef68238d0737325
     LOW: 10000,
     HIGH: 50000
+
   };
   var containerFilters = document.querySelector('.map__filters');
   var type = containerFilters.querySelector('#housing-type');
@@ -35,7 +41,12 @@
         break;
 
       case 'high':
+<<<<<<< HEAD
         isPriceConforming = element.offer.price > PriсeValue.HIGH;
+=======
+        isPriceConforming = element.offer.price > PriseValue.HIGH;
+
+>>>>>>> 9a3e602690621433a4e2db11cef68238d0737325
         break;
     }
     return isPriceConforming;

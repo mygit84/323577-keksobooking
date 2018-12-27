@@ -22,7 +22,7 @@
   var showMapPins = function (data) {
     window.pins.getPinsArray(data, setClearMap);
     window.pins.drawMapPins(isPageActive, window.map.getContainerPin());
-    getClickOnPinOnMap(data);
+    getClickOnPinMap(data);
   };
 
   var onSuccessLoad = function (data) {
@@ -65,7 +65,7 @@
     return mapPins;
   };
 
-  var getClickOnPinOnMap = function (arr) {
+  var getClickOnPinMap = function (arr) {
     var pinsList = getActivePinsOnMap();
 
     Array.from(pinsList).forEach(function (element, i) {
@@ -83,7 +83,7 @@
     window.card.clearActiveCard();
   };
 
-  var setCleanPage = function () {
+  var setClearPage = function () {
     setClearMap();
     window.preview.removePhoto();
     window.map.getDefaultMainPinCoords();
@@ -102,7 +102,7 @@
   var onSubmitFormData = function (evt) {
     window.backend.save(new FormData(window.form.getContainerForm()), function () {
       window.form.getContainerForm().reset();
-      setCleanPage();
+      setClearPage();
       getAddressPin();
       setFormValue();
       getSuccessMessage();
@@ -144,7 +144,7 @@
     document.removeEventListener('mousemove', onMainPinMouseMove);
     document.removeEventListener('mouseup', onMainPinActiveMouseUp);
     window.form.getFormSubmitHandler(onSubmitFormData);
-    window.form.getResetBtnHandler(setCleanPage);
+    window.form.getResetBtnHandler(setClearPage);
   };
 
   var onMainPinMouseDown = function (downEvt) {
