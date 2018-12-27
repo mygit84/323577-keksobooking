@@ -31,7 +31,7 @@
         break;
 
       case 'middle':
-        isPriceConforming = element.offer.price >= PriсeValue.LOW && element.offer.price <= PriсeValue.HIGH;
+        isPriceConforming = element.offer.price >= PriceValue.LOW && element.offer.price <= PriceValue.HIGH;
         break;
 
       case 'high':
