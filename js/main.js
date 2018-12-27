@@ -22,7 +22,7 @@
   var showMapPins = function (data) {
     window.pins.getPinsArray(data, setClearMap);
     window.pins.drawMapPins(isPageActive, window.map.getContainerPin());
-    getMapPinsClick(data);
+    getClickOnPinOnMap(data);
   };
 
   var onSuccessLoad = function (data) {
@@ -60,10 +60,15 @@
     });
   };
 
-  var getMapPinsClick = function (arr) {
+  var getActivePinsOnMap = function () {
     var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    return mapPins;
+  };
 
-    Array.from(mapPins).forEach(function (element, i) {
+  var getClickOnPinOnMap = function (arr) {
+    var pinsList = getActivePinsOnMap();
+
+    Array.from(pinsList).forEach(function (element, i) {
       getPinClickHandler(element, i, arr);
     });
   };

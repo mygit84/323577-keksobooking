@@ -16,6 +16,7 @@
   var cardElement = similarMapCard.cloneNode(true);
   var popupPhotos = cardElement.querySelector('.popup__photos');
   var popupFeatures = cardElement.querySelector('.popup__features');
+  var activeCardElement;
 
   var getElementFeature = function (newFeature, index) {
     var newElementFeature = document.createElement('li');
@@ -125,8 +126,13 @@
     getElementCloseClick(popup, popupClose);
   };
 
+  var getDomElementCard = function () {
+    activeCardElement = document.querySelector('.map__card');
+    return activeCardElement;
+  };
+
   var clearActiveCard = function () {
-    var activeCard = document.querySelector('.map__card');
+    var activeCard = getDomElementCard();
 
     if (activeCard) {
       getRemoveElement(activeCard);

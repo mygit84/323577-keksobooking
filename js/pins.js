@@ -7,7 +7,7 @@
     HEIGHT: 70
   };
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
-  var response = [];
+  var findings = [];
   var pinElements = null;
 
   var getMapPin = function (ad) {
@@ -27,7 +27,7 @@
     callback();
 
     ads.forEach(function (element) {
-      response.push(getMapPin(element));
+      findings.push(getMapPin(element));
     });
   };
 
@@ -41,16 +41,16 @@
   };
 
   var drawMapPins = function (parametr, container) {
-    pinElements = renderMapPins(response);
+    pinElements = renderMapPins(findings);
     return parametr ?
       container.appendChild(pinElements) : 0;
   };
 
   var clearMapPins = function () {
-    response.forEach(function (element) {
+    findings.forEach(function (element) {
       element.remove();
     });
-    response = [];
+    findings = [];
   };
 
   var getActiveClassPin = function (evt) {

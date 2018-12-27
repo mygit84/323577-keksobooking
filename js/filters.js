@@ -3,7 +3,7 @@
 (function () {
   var VALUE_ANY = 'any';
   var NUMBER_PINS = 5;
-  var PriseValue = {
+  var PriсeValue = {
     LOW: 10000,
     HIGH: 50000
   };
@@ -27,15 +27,15 @@
         break;
 
       case 'low':
-        isPriceConforming = element.offer.price < PriseValue.LOW;
+        isPriceConforming = element.offer.price < PriсeValue.LOW;
         break;
 
       case 'middle':
-        isPriceConforming = element.offer.price >= PriseValue.LOW && element.offer.price <= PriseValue.HIGH;
+        isPriceConforming = element.offer.price >= PriсeValue.LOW && element.offer.price <= PriсeValue.HIGH;
         break;
 
       case 'high':
-        isPriceConforming = element.offer.price > PriseValue.HIGH;
+        isPriceConforming = element.offer.price > PriсeValue.HIGH;
         break;
     }
     return isPriceConforming;
