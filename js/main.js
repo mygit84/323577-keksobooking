@@ -12,6 +12,7 @@
     HEIGHT: 65
   };
   var mapFiltersContainer = document.querySelector('.map__filters-container');
+  var containerPin = document.querySelector('.map__pins');
   var mainPin = window.map.getMainPin();
   var isPageActive;
   var startCoords = {
@@ -21,7 +22,7 @@
 
   var showMapPins = function (data) {
     window.pins.getPinsArray(data, setClearMap);
-    window.pins.drawMapPins(isPageActive, window.map.getContainerPin());
+    window.pins.drawMapPins(isPageActive, containerPin);
     getClickOnPinMap(data);
   };
 
@@ -35,10 +36,10 @@
 
   var getDisabledElement = function (element) {
     if (!isPageActive) {
-      element.setAttribute('disabled', 'disabled');
+      element.disabled = true;
     }
     if (isPageActive) {
-      element.removeAttribute('disabled', 'disabled');
+      element.disabled = false;
     }
   };
 
@@ -78,6 +79,11 @@
     window.form.getRoomNumberValue();
   };
 
+  var setResetForms = function () {
+    window.form.getContainerForm().reset();
+    window.filters.containerFilters().reset();
+  };
+
   var setClearMap = function () {
     window.pins.clear();
     window.card.clearActiveCard();
@@ -85,6 +91,7 @@
 
   var setClearPage = function () {
     setClearMap();
+    setResetForms();
     window.preview.removePhoto();
     window.map.getDefaultMainPinCoords();
     setLockPage();
@@ -101,7 +108,6 @@
 
   var onSubmitFormData = function (evt) {
     window.backend.save(new FormData(window.form.getContainerForm()), function () {
-      window.form.getContainerForm().reset();
       setClearPage();
       getAddressPin();
       setFormValue();
@@ -183,8 +189,8 @@
     var leftCoords = mainPin.offsetLeft - shift.x;
 
     var limits = {
-      top: Coodinate.MIN_Y - MainPinSize.WIDTH,
-      right: Coodinate.MAX_X - MainPinSize.HEIGHT / 2,
+      top: Coodinate.MIN_Y - MainPinSize.HEIGHT,
+      right: Coodinate.MAX_X - MainPinSize.WIDTH / 2,
       bottom: Coodinate.MAX_Y - MainPinSize.HEIGHT,
       left: Coodinate.MIN_X - MainPinSize.WIDTH / 2
     };
@@ -224,5 +230,5 @@
   };
 
   window.map.getLockPage(setLockPage());
-  window.map.getMainPin().addEventListener('mousedown', onMainPinMouseDown);
+  mainPin.addEventListener('mousedown', onMainPinMouseDown);
 })();

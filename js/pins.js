@@ -9,6 +9,7 @@
   var similarMapPin = document.querySelector('#pin').content.querySelector('.map__pin');
   var findings = [];
   var pinElements = null;
+  var pinActive;
 
   var getMapPin = function (ad) {
     var pinElement = similarMapPin.cloneNode(true);
@@ -53,12 +54,25 @@
     findings = [];
   };
 
+  var getActivePin = function () {
+    pinActive = document.querySelector('.' + PIN_ACTIVE_CLASS);
+    return pinActive;
+  };
+
+  var getRemoveActiveClass = function () {
+    var activePin = getActivePin();
+
+    if (activePin) {
+      activePin.classList.remove(PIN_ACTIVE_CLASS);
+    }
+  };
+
   var getActiveClassPin = function (evt) {
     var target = evt.currentTarget;
-    var pinActive = document.querySelector('.' + PIN_ACTIVE_CLASS);
+    var currentActivePin = getActivePin();
 
-    if (!target || pinActive) {
-      pinActive.classList.remove(PIN_ACTIVE_CLASS);
+    if (!target || currentActivePin) {
+      getRemoveActiveClass();
       target.classList.add(PIN_ACTIVE_CLASS);
     }
     target.classList.add(PIN_ACTIVE_CLASS);
@@ -68,6 +82,7 @@
     getPinsArray: getPinsArray,
     drawMapPins: drawMapPins,
     clear: clearMapPins,
-    getActiveClassPin: getActiveClassPin
+    getActiveClassPin: getActiveClassPin,
+    getRemoveActiveClass: getRemoveActiveClass
   };
 })();

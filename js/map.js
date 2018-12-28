@@ -2,8 +2,7 @@
 
 (function () {
   var map = document.querySelector('.map');
-  var containerPin = map.querySelector('.map__pins');
-  var mapPinMain = containerPin.querySelector('.map__pin--main');
+  var mapPinMain = map.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('#address');
   var mainPinDefaultCootds = {
     left: mapPinMain.style.left,
@@ -46,10 +45,6 @@
     return mapPinMain;
   };
 
-  var getContainerPin = function () {
-    return containerPin;
-  };
-
   var getLockPage = function (callback) {
     return function () {
       callback();
@@ -59,7 +54,6 @@
   window.map = {
     getMap: getMap,
     getMainPin: getMainPin,
-    getContainerPin: getContainerPin,
     getDefaultMainPinCoords: getDefaultMainPinCoords,
     getCoordsMainPin: getCoordsMainPin,
     getLockPage: getLockPage
