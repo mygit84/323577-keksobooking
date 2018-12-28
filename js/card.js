@@ -101,14 +101,15 @@
     return evt.keyCode === ESC_KEYCODE;
   };
 
-  var getRemoveElement = function (element) {
+  var setRemoveElement = function (element) {
+    window.pins.getRemoveActiveClass();
     element.remove();
   };
 
   var onCardCloseEscPress = function (element) {
     return function (evt) {
       if (isEscEvent(evt) && typeof (element) !== 'undefined' && element !== null) {
-        getRemoveElement(element);
+        setRemoveElement(element);
       }
       document.removeEventListener('keydown', onCardCloseEscPress);
     };
@@ -116,7 +117,7 @@
 
   var getElementCloseClick = function (element, elementClose) {
     elementClose.addEventListener('click', function () {
-      getRemoveElement(element);
+      setRemoveElement(element);
     });
   };
 
@@ -135,7 +136,7 @@
     var activeCard = getDomElementCard();
 
     if (activeCard) {
-      getRemoveElement(activeCard);
+      setRemoveElement(activeCard);
     }
   };
 
